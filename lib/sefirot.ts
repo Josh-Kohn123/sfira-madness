@@ -1,0 +1,86 @@
+export interface Sefirah {
+  hebrew: string;
+  transliteration: string;
+  english: string;
+}
+
+export const SEFIROT: Sefirah[] = [
+  { hebrew: "חסד", transliteration: "Chesed", english: "Lovingkindness" },
+  { hebrew: "גבורה", transliteration: "Gevurah", english: "Discipline" },
+  { hebrew: "תפארת", transliteration: "Tiferet", english: "Harmony" },
+  { hebrew: "נצח", transliteration: "Netzach", english: "Endurance" },
+  { hebrew: "הוד", transliteration: "Hod", english: "Humility" },
+  { hebrew: "יסוד", transliteration: "Yesod", english: "Connection" },
+  { hebrew: "מלכות", transliteration: "Malchut", english: "Sovereignty" },
+];
+
+export function getDaySefirot(day: number) {
+  if (day < 1 || day > 49) throw new Error(`Invalid omer day: ${day}`);
+  const weekIdx = Math.ceil(day / 7) - 1;
+  const dayIdx = (day - 1) % 7;
+  const primary = SEFIROT[weekIdx];
+  const secondary = SEFIROT[dayIdx];
+  return {
+    primary,
+    secondary,
+    hebrew: `${secondary.hebrew} שב${primary.hebrew}`,
+    english: `${secondary.english} within ${primary.english}`,
+  };
+}
+
+export const KAVANOT: string[] = [
+  "Begin with pure lovingkindness \u2014 let your generosity flow without reservation.",
+  "Find the discipline within your kindness \u2014 boundaries make love sustainable.",
+  "Discover the harmony in giving \u2014 balance between self and other.",
+  "Persist in your lovingkindness \u2014 endurance transforms a moment of generosity into a way of life.",
+  "Be humble in your giving \u2014 true kindness seeks no recognition.",
+  "Connect your lovingkindness to something deeper \u2014 let generosity become a bond.",
+  "Let your kindness build something lasting \u2014 sovereignty is lovingkindness that leads.",
+  "Bring lovingkindness into your discipline \u2014 even boundaries can be drawn with warmth.",
+  "Discipline your discipline \u2014 know when strictness serves and when it harms.",
+  "Find beauty in structure \u2014 harmony emerges when discipline is applied with grace.",
+  "Stay committed to your principles \u2014 endurance gives discipline its strength.",
+  "Practice humility in your judgments \u2014 the strongest boundaries bend without breaking.",
+  "Ground your discipline in connection \u2014 rules exist to bring people closer, not push them apart.",
+  "Let your discipline lead \u2014 sometimes the kindest thing is holding the line.",
+  "Be kind to your sense of beauty \u2014 let harmony begin with self-acceptance.",
+  "Bring structure to your creativity \u2014 discipline is the canvas for harmony.",
+  "Rest in balance \u2014 true harmony doesn't need to be forced.",
+  "Let your sense of balance endure \u2014 harmony is not a destination but a practice.",
+  "Find the humility in compromise \u2014 not every hill is worth climbing.",
+  "Connect through shared beauty \u2014 harmony is what we build together.",
+  "Let your balanced perspective guide others \u2014 harmony that leads creates peace.",
+  "Be generous with your endurance \u2014 encourage those who are struggling to persist.",
+  "Know when to push and when to rest \u2014 disciplined endurance outlasts brute force.",
+  "Find the beauty in perseverance \u2014 harmony isn't just balance, it's knowing that endurance itself can be graceful.",
+  "Endure in your endurance \u2014 the middle of the journey is where most people quit.",
+  "Stay humble in your persistence \u2014 the one who endures quietly often goes furthest.",
+  "Let your endurance connect you to purpose \u2014 perseverance without meaning is just stubbornness.",
+  "Lead through endurance \u2014 your persistence gives others permission to keep going.",
+  "Be kind in your humility \u2014 gentleness with yourself is not weakness.",
+  "Discipline your humility \u2014 know the difference between modesty and self-erasure.",
+  "Find the harmony in stepping back \u2014 sometimes beauty is letting others shine.",
+  "Persist in your humility \u2014 it's easy to be humble once, harder to stay humble always.",
+  "Today is Lag BaOmer! Celebrate the fire within your humility \u2014 even the humble have a spark that lights the world. \uD83D\uDD25\uD83C\uDFF9",
+  "Ground your humility in real connection \u2014 let modesty be a bridge, not a wall.",
+  "Let humility lead \u2014 the quietest voice in the room often has the most to say.",
+  "Bring lovingkindness into your connections \u2014 every bond starts with an open heart.",
+  "Set healthy boundaries in your relationships \u2014 connection without limits becomes enmeshment.",
+  "Find beauty in your bonds \u2014 the best relationships are works of art, built over time.",
+  "Commit to your connections \u2014 enduring relationships require showing up even when it's hard.",
+  "Be humble in your relationships \u2014 listen more than you speak.",
+  "Deepen your connections \u2014 a bond that goes to the root can weather any storm.",
+  "Let your connections lead to something greater \u2014 together we build what none of us can alone.",
+  "Rule with kindness \u2014 true leadership begins with caring for those you lead.",
+  "Lead with discipline \u2014 a leader without principles is just a person in front.",
+  "Lead with grace \u2014 sovereignty is most beautiful when it serves harmony.",
+  "Lead with endurance \u2014 the crown is heavy, but those who persist earn it.",
+  "Lead with humility \u2014 the greatest leaders know they still have everything to learn.",
+  "Connect your leadership to your deepest values \u2014 sovereignty grounded in truth transforms the world.",
+  "You made it. Day 49 \u2014 sovereignty within sovereignty. You are the master of your own commitment. \uD83D\uDC51",
+];
+
+export function getKavanah(day: number): string {
+  if (day < 1 || day > 49) throw new Error(`Invalid omer day: ${day}`);
+  return KAVANOT[day - 1];
+}
