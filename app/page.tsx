@@ -11,18 +11,23 @@ export default function Home() {
       <Particles />
       <div className="relative z-10 w-full max-w-sm text-center">
         <div className="text-5xl mb-4">🔥</div>
-        <h1 className="font-display text-3xl bg-gold-gradient bg-clip-text text-transparent animate-shimmer">
+        <h1 className="font-display text-3xl text-gold-gradient">
           Sfira Madness
         </h1>
         <p className="mt-3 text-sm text-cosmos-muted leading-relaxed">
-          Predict your friends.
+          Guess how far your friends will count.
           <br />
-          Count the Omer.
+          Track the Omer together.
           <br />
           Bragging rights for 49 days.
         </p>
 
-        <div className="mt-8 space-y-2.5">
+        <div className="mt-6 text-[11px] text-cosmos-muted/70 leading-relaxed space-y-1">
+          <p>🎯 Guess what day each friend stops counting</p>
+          <p>📊 Closest guesses win — lowest score takes the crown</p>
+        </div>
+
+        <div className="mt-6 space-y-2.5">
           <Link href="/create">
             <Button>🏆 Create a Group</Button>
           </Link>

@@ -15,14 +15,17 @@ interface Member {
 export function PredictionForm({
   members,
   inviteCode,
+  savedPredictions,
 }: {
   members: Member[];
   inviteCode: string;
+  savedPredictions?: Record<string, number>;
 }) {
+  const hasSaved = savedPredictions && Object.keys(savedPredictions).length > 0;
   const [values, setValues] = useState<Record<string, number>>(() => {
     const init: Record<string, number> = {};
     for (const m of members) {
-      init[m.id] = m.isSelf ? 49 : 25;
+      init[m.id] = m.isSelf ? 49 : (savedPredictions?.[m.id] ?? 25);
     }
     return init;
   });
@@ -47,7 +50,7 @@ export function PredictionForm({
         ))}
       </div>
       <Button type="submit" className="mt-5">
-        🔒 Lock In Predictions
+        {hasSaved ? "✏️ Update Predictions" : "🔒 Lock In Predictions"}
       </Button>
     </form>
   );

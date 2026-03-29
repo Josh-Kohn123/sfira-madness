@@ -119,7 +119,7 @@ export default async function GroupDashboard({ params }: Props) {
       <div className="relative z-10 mx-auto max-w-md px-4 pt-6">
         {/* Header */}
         <div className="text-center mb-1">
-          <h1 className="font-display text-2xl bg-gold-gradient bg-clip-text text-transparent animate-shimmer">
+          <h1 className="font-display text-2xl text-gold-gradient">
             Sfira Madness 🔥
           </h1>
           <div className="text-[11px] text-cosmos-muted uppercase tracking-widest mt-0.5">
@@ -163,9 +163,11 @@ export default async function GroupDashboard({ params }: Props) {
               {members.filter((m) => m.predictions_locked).length} of{" "}
               {members.length} predictions submitted
             </div>
-            {member && !member.predictions_locked && (
+            {member && (
               <Link href={`/group/${code}/predict`}>
-                <Button className="mt-4">Make My Predictions →</Button>
+                <Button className="mt-4">
+                  {member.predictions_locked ? "✏️ Edit My Predictions" : "Make My Predictions →"}
+                </Button>
               </Link>
             )}
           </div>
@@ -286,6 +288,44 @@ export default async function GroupDashboard({ params }: Props) {
         {/* Actions (client component for self-report + reactions) */}
         {member && phase === "during" && !member.eliminated_on_day && (
           <DashboardActions inviteCode={code} />
+        )}
+
+        {/* How to Play */}
+        {phase === "pre" && (
+          <div className="mt-6">
+            <SectionHeader>How to Play</SectionHeader>
+            <div className="rounded-2xl bg-cosmos-card border border-cosmos-border p-4 space-y-3 text-sm">
+              <div className="flex gap-2.5">
+                <span className="text-lg leading-none">1️⃣</span>
+                <div>
+                  <span className="font-semibold text-gold">Predict</span>
+                  <span className="text-cosmos-muted"> — Guess what day each friend will stop counting the Omer (days 1–49). Your own prediction is locked at 49.</span>
+                </div>
+              </div>
+              <div className="flex gap-2.5">
+                <span className="text-lg leading-none">2️⃣</span>
+                <div>
+                  <span className="font-semibold text-gold">Count</span>
+                  <span className="text-cosmos-muted"> — Once the Omer begins, count each night. If you miss a day, report it honestly.</span>
+                </div>
+              </div>
+              <div className="flex gap-2.5">
+                <span className="text-lg leading-none">3️⃣</span>
+                <div>
+                  <span className="font-semibold text-gold">Score</span>
+                  <span className="text-cosmos-muted"> — When someone stops, everyone&apos;s guesses are revealed. Your score = how many days off you were. </span>
+                  <span className="font-semibold text-white">Lower is better.</span>
+                </div>
+              </div>
+              <div className="flex gap-2.5">
+                <span className="text-lg leading-none">🏆</span>
+                <div>
+                  <span className="font-semibold text-gold">Win</span>
+                  <span className="text-cosmos-muted"> — After 49 days, the person with the lowest total score wins. If you stop counting yourself, you eat a penalty for every point off your own prediction.</span>
+                </div>
+              </div>
+            </div>
+          </div>
         )}
 
         {/* Pre-omer: member list + invite */}

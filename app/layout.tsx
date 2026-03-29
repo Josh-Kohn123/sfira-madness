@@ -16,7 +16,7 @@ const secularOne = Secular_One({
 export const metadata: Metadata = {
   title: "Sfira Madness",
   description:
-    "Predict your friends. Count the Omer. Bragging rights for 49 days.",
+    "Guess how far your friends will count the Omer. Track together. Bragging rights for 49 days.",
 };
 
 export default function RootLayout({

@@ -16,7 +16,10 @@ export default function CreatePage() {
     <main className="relative flex min-h-screen flex-col items-center justify-center p-6">
       <Particles />
       <div className="relative z-10 w-full max-w-sm">
-        <h1 className="font-display text-2xl bg-gold-gradient bg-clip-text text-transparent animate-shimmer text-center">
+        <a href="/" className="text-xs text-cosmos-muted hover:text-gold transition-colors">
+          ← Home
+        </a>
+        <h1 className="font-display text-2xl text-gold-gradient text-center mt-2">
           Sfira Madness 🔥
         </h1>
         <p className="text-xs text-cosmos-muted text-center mt-1 mb-6">

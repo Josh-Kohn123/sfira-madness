@@ -1,6 +1,7 @@
 import { getDb } from "@/lib/db";
 import { Particles } from "@/components/ui/particles";
 import { JoinForm } from "./join-form";
+import { CodeEntryPage } from "./code-entry";
 
 interface Props {
   params: Promise<{ code: string }>;
@@ -47,7 +48,10 @@ export default async function JoinPage({ params }: Props) {
     <main className="relative flex min-h-screen flex-col items-center justify-center p-6">
       <Particles />
       <div className="relative z-10 w-full max-w-sm">
-        <h1 className="font-display text-2xl bg-gold-gradient bg-clip-text text-transparent animate-shimmer text-center">
+        <a href="/" className="text-xs text-cosmos-muted hover:text-gold transition-colors">
+          ← Home
+        </a>
+        <h1 className="font-display text-2xl text-gold-gradient text-center mt-2">
           Join Group
         </h1>
 
@@ -88,38 +92,3 @@ export default async function JoinPage({ params }: Props) {
   );
 }
 
-function CodeEntryPage() {
-  return (
-    <main className="relative flex min-h-screen flex-col items-center justify-center p-6">
-      <Particles />
-      <div className="relative z-10 w-full max-w-sm text-center">
-        <h1 className="font-display text-2xl bg-gold-gradient bg-clip-text text-transparent animate-shimmer">
-          Join a Group
-        </h1>
-        <p className="text-xs text-cosmos-muted mt-1 mb-6">
-          Enter the code your friend shared
-        </p>
-        <form
-          action={(fd) => {
-            const code = (fd.get("code") as string)?.trim().toUpperCase();
-            if (code) window.location.href = `/join/${code}`;
-          }}
-        >
-          <input
-            name="code"
-            placeholder="ABC-D23"
-            className="w-full rounded-xl border-2 border-cosmos-border bg-cosmos-card px-4 py-4 text-center text-2xl font-mono font-bold tracking-[0.3em] text-gold placeholder:text-cosmos-muted/30 outline-none focus:border-gold/50"
-            maxLength={7}
-            autoFocus
-          />
-          <button
-            type="submit"
-            className="w-full mt-4 rounded-xl bg-gold-gradient px-6 py-3.5 text-[15px] font-bold text-cosmos-deep"
-          >
-            Find Group →
-          </button>
-        </form>
-      </div>
-    </main>
-  );
-}

@@ -8,7 +8,7 @@ interface ShareButtonProps {
 export function ShareButton({ inviteCode, groupName }: ShareButtonProps) {
   const url = `${typeof window !== "undefined" ? window.location.origin : ""}/join/${inviteCode}`;
   const whatsappText = encodeURIComponent(
-    `Join me on Sfira Madness! 🔥 Predict who'll make it all 49 days of the Omer.\n\n${url}`
+    `Join me on Sfira Madness! 🔥 Guess how far your friends will count the Omer — 49 days of bragging rights.\n\n${url}`
   );
 
   return (
