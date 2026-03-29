@@ -30,11 +30,19 @@ export default async function GroupDashboard({ params }: Props) {
   if (!group) redirect("/");
 
   const member = await getCurrentMemberForGroup(group.id);
-  const members = await db`
+  interface GroupMember {
+    id: string;
+    name: string;
+    avatar_url: string | null;
+    eliminated_on_day: number | null;
+    predictions_locked: boolean;
+    is_creator: boolean;
+  }
+  const members = (await db`
     SELECT id, name, avatar_url, eliminated_on_day, predictions_locked, is_creator
     FROM members WHERE group_id = ${group.id}
     ORDER BY joined_at ASC
-  `;
+  `) as unknown as GroupMember[];
 
   const phase = getOmerPhase();
   const currentDay = getCurrentOmerDay();
@@ -48,16 +56,13 @@ export default async function GroupDashboard({ params }: Props) {
       WHERE predictor_id = ${member.id}
     `;
     myPredictions = Object.fromEntries(
-      preds.map((p: { subject_id: string; predicted_day: number }) => [
-        p.subject_id,
-        p.predicted_day,
-      ])
+      preds.map((p) => [p.subject_id, p.predicted_day])
     );
   }
 
   // Get all predictions for eliminated members (for reveals)
   const eliminatedMembers = members.filter(
-    (m: { eliminated_on_day: number | null }) => m.eliminated_on_day !== null
+    (m) => m.eliminated_on_day !== null
   );
   const reveals: Record<
     string,
@@ -73,14 +78,12 @@ export default async function GroupDashboard({ params }: Props) {
       ORDER BY pm.joined_at ASC
     `;
     reveals[em.id] = {
-      predictions: preds.map(
-        (p: { predictor_id: string; predictor_name: string; predicted_day: number }) => ({
-          predictorName: p.predictor_name,
-          predictedDay: p.predicted_day,
-          isYou: member ? p.predictor_id === member.id : false,
-          isSelf: p.predictor_id === em.id,
-        })
-      ),
+      predictions: preds.map((p) => ({
+        predictorName: p.predictor_name as string,
+        predictedDay: p.predicted_day as number,
+        isYou: member ? p.predictor_id === member.id : false,
+        isSelf: p.predictor_id === em.id,
+      })),
     };
   }
 
@@ -107,12 +110,8 @@ export default async function GroupDashboard({ params }: Props) {
     );
   }
 
-  const counting = members.filter(
-    (m: { eliminated_on_day: number | null }) => m.eliminated_on_day === null
-  );
-  const stopped = members.filter(
-    (m: { eliminated_on_day: number | null }) => m.eliminated_on_day !== null
-  );
+  const counting = members.filter((m) => m.eliminated_on_day === null);
+  const stopped = members.filter((m) => m.eliminated_on_day !== null);
 
   return (
     <main className="relative min-h-screen pb-10">
@@ -161,7 +160,7 @@ export default async function GroupDashboard({ params }: Props) {
               Omer starts in {daysUntilOmer()} days
             </div>
             <div className="text-xs text-cosmos-muted mt-1">
-              {members.filter((m: { predictions_locked: boolean }) => m.predictions_locked).length} of{" "}
+              {members.filter((m) => m.predictions_locked).length} of{" "}
               {members.length} predictions submitted
             </div>
             {member && !member.predictions_locked && (
@@ -190,7 +189,7 @@ export default async function GroupDashboard({ params }: Props) {
               <div className="mt-6">
                 <SectionHeader>Still Counting</SectionHeader>
                 <div className="space-y-2">
-                  {counting.map((m: { id: string; name: string; avatar_url: string | null }) => (
+                  {counting.map((m) => (
                     <PlayerCard
                       key={m.id}
                       name={m.name}
@@ -209,13 +208,7 @@ export default async function GroupDashboard({ params }: Props) {
               <div className="mt-6">
                 <SectionHeader>Stopped Counting</SectionHeader>
                 <div className="space-y-2">
-                  {stopped.map(
-                    (m: {
-                      id: string;
-                      name: string;
-                      avatar_url: string | null;
-                      eliminated_on_day: number;
-                    }) => (
+                  {stopped.map((m) => (
                       <PlayerCard
                         key={m.id}
                         name={m.name}
@@ -243,13 +236,12 @@ export default async function GroupDashboard({ params }: Props) {
           <div className="mt-6">
             <SectionHeader>Predictions Revealed</SectionHeader>
             <div className="space-y-3">
-              {eliminatedMembers.map(
-                (m: { id: string; name: string; eliminated_on_day: number }) =>
+              {eliminatedMembers.map((m) =>
                   reveals[m.id] && (
                     <RevealCard
                       key={m.id}
                       subjectName={m.name}
-                      eliminatedOnDay={m.eliminated_on_day}
+                      eliminatedOnDay={m.eliminated_on_day!}
                       predictions={reveals[m.id].predictions}
                     />
                   )
@@ -303,14 +295,7 @@ export default async function GroupDashboard({ params }: Props) {
               Joined ({members.length})
             </SectionHeader>
             <div className="space-y-1.5">
-              {members.map(
-                (m: {
-                  id: string;
-                  name: string;
-                  avatar_url: string | null;
-                  predictions_locked: boolean;
-                  is_creator: boolean;
-                }) => (
+              {members.map((m) => (
                   <div
                     key={m.id}
                     className="flex items-center gap-2.5 rounded-xl bg-cosmos-card p-2.5"

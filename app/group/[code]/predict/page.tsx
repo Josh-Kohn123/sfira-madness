@@ -41,7 +41,7 @@ export default async function PredictPage({ params }: Props) {
         </p>
 
         <PredictionForm
-          members={members.map((m: { id: string; name: string; avatar_url: string | null }) => ({
+          members={members.map((m) => ({
             id: m.id,
             name: m.name,
             avatarUrl: m.avatar_url,

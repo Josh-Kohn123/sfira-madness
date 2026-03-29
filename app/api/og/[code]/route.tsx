@@ -22,7 +22,7 @@ export async function GET(
     SELECT eliminated_on_day FROM members WHERE group_id = ${group.id}
   `;
   const counting = members.filter(
-    (m: { eliminated_on_day: number | null }) => m.eliminated_on_day === null
+    (m) => m.eliminated_on_day === null
   ).length;
   const currentDay = getCurrentOmerDay();
   const sefirot = currentDay ? getDaySefirot(currentDay) : null;

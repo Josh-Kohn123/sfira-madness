@@ -62,7 +62,7 @@ export default async function JoinPage({ params }: Props) {
             </div>
           </div>
           <div className="flex mt-3 -space-x-1.5">
-            {members.slice(0, 5).map((m: { id: string; name: string; avatar_url: string | null }) => (
+            {members.slice(0, 5).map((m) => (
               <div
                 key={m.id}
                 className="w-8 h-8 rounded-full border-2 border-cosmos-deep overflow-hidden"
@@ -78,7 +78,7 @@ export default async function JoinPage({ params }: Props) {
             ))}
           </div>
           <div className="text-[11px] text-cosmos-muted mt-2">
-            {members.map((m: { name: string }) => m.name).join(", ")}
+            {members.map((m) => m.name).join(", ")}
           </div>
         </div>
 

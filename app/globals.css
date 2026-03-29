@@ -1,9 +1,31 @@
 @import "tailwindcss";
 
+@theme {
+  --color-cosmos-bg: #1a1040;
+  --color-cosmos-deep: #0d0820;
+  --color-cosmos-card: rgba(255, 255, 255, 0.06);
+  --color-cosmos-border: rgba(255, 255, 255, 0.1);
+  --color-cosmos-muted: #9b8ec4;
+  --color-gold: #f6d365;
+  --color-gold-warm: #fda085;
+  --color-counting: #6ee7a0;
+  --color-stopped: #fbbf24;
+  --font-sans: var(--font-rubik), system-ui, sans-serif;
+  --font-display: var(--font-secular-one), sans-serif;
+}
+
 @layer base {
   body {
-    @apply bg-cosmos-bg;
+    background: linear-gradient(135deg, #1a1040 0%, #2d1b69 30%, #1a1040 60%, #0f2027 100%);
   }
+}
+
+@utility bg-cosmos-gradient {
+  background: linear-gradient(135deg, #1a1040 0%, #2d1b69 30%, #1a1040 60%, #0f2027 100%);
+}
+
+@utility bg-gold-gradient {
+  background: linear-gradient(135deg, #f6d365, #fda085);
 }
 
 @keyframes float {

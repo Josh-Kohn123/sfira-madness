@@ -4,18 +4,21 @@ import { getDb } from "@/lib/db";
 import { getCurrentOmerDay } from "@/lib/omer-date";
 import { getDaySefirot } from "@/lib/sefirot";
 
-webpush.setVapidDetails(
-  "mailto:sfira-madness@example.com",
-  process.env.VAPID_PUBLIC_KEY!,
-  process.env.VAPID_PRIVATE_KEY!
-);
-
 export async function GET(request: NextRequest) {
   // Verify cron secret
   const authHeader = request.headers.get("authorization");
   if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  if (!process.env.VAPID_PUBLIC_KEY || !process.env.VAPID_PRIVATE_KEY) {
+    return NextResponse.json({ error: "VAPID keys not configured" }, { status: 500 });
+  }
+  webpush.setVapidDetails(
+    "mailto:sfira-madness@example.com",
+    process.env.VAPID_PUBLIC_KEY,
+    process.env.VAPID_PRIVATE_KEY
+  );
 
   const currentDay = getCurrentOmerDay();
   if (!currentDay) {
