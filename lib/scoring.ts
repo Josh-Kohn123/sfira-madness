@@ -1,4 +1,5 @@
 import { queryMany } from "./db";
+import { getOmerPhase } from "./omer-date";
 
 interface PredictionRow {
   predictor_id: string;
@@ -10,6 +11,8 @@ interface PredictionRow {
 }
 
 export async function getGroupScores(groupId: string) {
+  const phase = getOmerPhase();
+
   const predictions = await queryMany<PredictionRow>`
     SELECT
       p.predictor_id,
@@ -44,6 +47,11 @@ export async function getGroupScores(groupId: string) {
   }
 
   for (const p of predictions) {
+    // Only score predictions for subjects who have been eliminated,
+    // or for all subjects once the game is over (post phase).
+    const isResolved = p.eliminated_on_day !== null || phase === "post";
+    if (!isResolved) continue;
+
     const actual = p.eliminated_on_day ?? 49;
     const score = Math.abs(actual - p.predicted_day);
     const entry = byPredictor.get(p.predictor_id);

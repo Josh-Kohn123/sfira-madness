@@ -9,17 +9,19 @@ interface RevealCardProps {
   subjectName: string;
   eliminatedOnDay: number;
   predictions: RevealEntry[];
+  madeItAll?: boolean;
 }
 
 export function RevealCard({
   subjectName,
   eliminatedOnDay,
   predictions,
+  madeItAll = false,
 }: RevealCardProps) {
   return (
     <div className="rounded-2xl border border-cosmos-border bg-cosmos-card p-3.5">
-      <div className="text-sm font-bold text-stopped mb-2">
-        {subjectName} — stopped day {eliminatedOnDay}
+      <div className={`text-sm font-bold mb-2 ${madeItAll ? "text-counting" : "text-stopped"}`}>
+        {subjectName} — {madeItAll ? "made it all 49 days! 🎉" : `stopped day ${eliminatedOnDay}`}
       </div>
       <div className="grid grid-cols-3 gap-1.5">
         {predictions.map((p) => {

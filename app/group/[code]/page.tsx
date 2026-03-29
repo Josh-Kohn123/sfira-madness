@@ -60,32 +60,35 @@ export default async function GroupDashboard({ params }: Props) {
     );
   }
 
-  // Get all predictions for eliminated members (for reveals)
-  const eliminatedMembers = members.filter(
-    (m) => m.eliminated_on_day !== null
-  );
+  // Get predictions for resolved members only (eliminated, or everyone if post phase)
+  const resolvedMembers = phase === "post"
+    ? members
+    : members.filter((m) => m.eliminated_on_day !== null);
   const reveals: Record<
     string,
     { predictions: { predictorName: string; predictedDay: number; isYou: boolean; isSelf: boolean }[] }
   > = {};
 
-  for (const em of eliminatedMembers) {
+  for (const rm of resolvedMembers) {
     const preds = await db`
       SELECT p.predictor_id, pm.name as predictor_name, p.predicted_day
       FROM predictions p
       JOIN members pm ON p.predictor_id = pm.id
-      WHERE p.subject_id = ${em.id}
+      WHERE p.subject_id = ${rm.id}
       ORDER BY pm.joined_at ASC
     `;
-    reveals[em.id] = {
+    reveals[rm.id] = {
       predictions: preds.map((p) => ({
         predictorName: p.predictor_name as string,
         predictedDay: p.predicted_day as number,
         isYou: member ? p.predictor_id === member.id : false,
-        isSelf: p.predictor_id === em.id,
+        isSelf: p.predictor_id === rm.id,
       })),
     };
   }
+  const eliminatedMembers = members.filter(
+    (m) => m.eliminated_on_day !== null
+  );
 
   // Get reactions for eliminated members
   const reactions = await db`
@@ -199,7 +202,6 @@ export default async function GroupDashboard({ params }: Props) {
                       isYou={member?.id === m.id}
                       isCounting
                       streak={currentDay ?? undefined}
-                      yourPrediction={myPredictions[m.id]}
                     />
                   ))}
                 </div>
@@ -233,18 +235,19 @@ export default async function GroupDashboard({ params }: Props) {
           </>
         )}
 
-        {/* Reveals */}
-        {eliminatedMembers.length > 0 && (
+        {/* Reveals — only for resolved players */}
+        {resolvedMembers.length > 0 && (
           <div className="mt-6">
             <SectionHeader>Predictions Revealed</SectionHeader>
             <div className="space-y-3">
-              {eliminatedMembers.map((m) =>
+              {resolvedMembers.map((m) =>
                   reveals[m.id] && (
                     <RevealCard
                       key={m.id}
                       subjectName={m.name}
-                      eliminatedOnDay={m.eliminated_on_day!}
+                      eliminatedOnDay={m.eliminated_on_day ?? 49}
                       predictions={reveals[m.id].predictions}
+                      madeItAll={m.eliminated_on_day === null}
                     />
                   )
               )}
@@ -261,7 +264,7 @@ export default async function GroupDashboard({ params }: Props) {
                 ...s,
                 isYou: member?.id === s.memberId,
               }))}
-              resolvedCount={eliminatedMembers.length}
+              resolvedCount={resolvedMembers.length}
               totalMembers={members.length}
             />
           </div>
@@ -299,7 +302,7 @@ export default async function GroupDashboard({ params }: Props) {
                 <span className="text-lg leading-none">1️⃣</span>
                 <div>
                   <span className="font-semibold text-gold">Predict</span>
-                  <span className="text-cosmos-muted"> — Guess what day each friend will stop counting the Omer (days 1–49). Your own prediction is locked at 49.</span>
+                  <span className="text-cosmos-muted"> — Guess what day each friend will stop counting the Omer (days 1–49). Your prediction about yourself is locked at 49 — we believe in you going all the way and won&apos;t let you bet against yourself!</span>
                 </div>
               </div>
               <div className="flex gap-2.5">
@@ -312,16 +315,16 @@ export default async function GroupDashboard({ params }: Props) {
               <div className="flex gap-2.5">
                 <span className="text-lg leading-none">3️⃣</span>
                 <div>
-                  <span className="font-semibold text-gold">Score</span>
-                  <span className="text-cosmos-muted"> — When someone stops, everyone&apos;s guesses are revealed. Your score = how many days off you were. </span>
-                  <span className="font-semibold text-white">Lower is better.</span>
+                  <span className="font-semibold text-gold">Reveal</span>
+                  <span className="text-cosmos-muted"> — When someone reports they missed a day, everyone&apos;s predictions about that person are revealed. Your score = how many days off your guess was. </span>
+                  <span className="font-semibold text-white">Think golf — lowest score wins!</span>
                 </div>
               </div>
               <div className="flex gap-2.5">
                 <span className="text-lg leading-none">🏆</span>
                 <div>
                   <span className="font-semibold text-gold">Win</span>
-                  <span className="text-cosmos-muted"> — After 49 days, the person with the lowest total score wins. If you stop counting yourself, you eat a penalty for every point off your own prediction.</span>
+                  <span className="text-cosmos-muted"> — After 49 days, all remaining predictions are revealed and the most accurate guesser wins. If you stop counting early, you also lose points since your own prediction was 49.</span>
                 </div>
               </div>
             </div>

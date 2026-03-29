@@ -24,7 +24,7 @@ export default function Home() {
 
         <div className="mt-6 text-[11px] text-cosmos-muted/70 leading-relaxed space-y-1">
           <p>🎯 Guess what day each friend stops counting</p>
-          <p>📊 Closest guesses win — lowest score takes the crown</p>
+          <p>📊 Closest guesses win — think golf, lowest score takes the crown</p>
         </div>
 
         <div className="mt-6 space-y-2.5">

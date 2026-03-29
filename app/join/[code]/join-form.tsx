@@ -22,8 +22,11 @@ export function JoinForm({ inviteCode }: { inviteCode: string }) {
         <Input name="name" label="Your Name" placeholder="How your friends know you" required />
         <div className="space-y-1.5">
           <label className="text-[11px] uppercase tracking-wider text-cosmos-muted">
-            Set a 4-digit PIN
+            Set a 4-digit PIN (your password)
           </label>
+          <p className="text-[10px] text-cosmos-muted/60 -mt-1">
+            This is your account password — you&apos;ll need it to log back in
+          </p>
           <PinInput value={pin} onChange={setPin} />
         </div>
       </div>
