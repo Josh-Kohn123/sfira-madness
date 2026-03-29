@@ -1,0 +1,56 @@
+import { getDaySefirot, getKavanah } from "@/lib/sefirot";
+
+interface DayCounterProps {
+  day: number;
+}
+
+export function DayCounter({ day }: DayCounterProps) {
+  const sefirot = getDaySefirot(day);
+  const kavanah = getKavanah(day);
+  const progress = day / 49;
+  const circumference = 2 * Math.PI * 70;
+  const offset = circumference * (1 - progress);
+
+  return (
+    <div className="text-center">
+      <div className="relative mx-auto w-40 h-40 flex items-center justify-center">
+        <svg className="absolute inset-0 -rotate-90" viewBox="0 0 160 160">
+          <defs>
+            <linearGradient id="ring-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#f6d365" />
+              <stop offset="100%" stopColor="#fda085" />
+            </linearGradient>
+          </defs>
+          <circle
+            cx="80" cy="80" r="70"
+            fill="none" stroke="#2a2060" strokeWidth="6"
+          />
+          <circle
+            cx="80" cy="80" r="70"
+            fill="none" stroke="url(#ring-grad)" strokeWidth="6"
+            strokeLinecap="round"
+            strokeDasharray={circumference}
+            strokeDashoffset={offset}
+            className="transition-all duration-1000"
+          />
+        </svg>
+        <div className="relative z-10">
+          <div className="text-5xl font-black">{day}</div>
+          <div className="text-xs text-cosmos-muted -mt-1">of 49</div>
+        </div>
+      </div>
+      <div className="mt-3">
+        <div className="text-lg text-gold font-serif">{sefirot.hebrew}</div>
+        <div className="text-xs text-cosmos-muted mt-0.5">{sefirot.english}</div>
+      </div>
+      <div className="mt-3 mx-auto max-w-xs border-l-2 border-gold/30 pl-3 text-left">
+        <div className="text-[10px] uppercase tracking-wider text-cosmos-muted mb-1">
+          Today&apos;s Kavanah
+        </div>
+        <div className="text-sm text-white/80 italic leading-relaxed">
+          &quot;{kavanah}&quot;
+        </div>
+      </div>
+    </div>
+  );
+}
