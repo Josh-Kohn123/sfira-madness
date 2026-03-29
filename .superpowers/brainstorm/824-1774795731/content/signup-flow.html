@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Secular+One&family=Rubik:wght@400;600;700;900&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: linear-gradient(135deg, #1a1040 0%, #2d1b69 30%, #1a1040 60%, #0f2027 100%);
+    color: #e8e0f0;
+    font-family: 'Rubik', system-ui, sans-serif;
+    min-height: 100vh;
+    padding: 20px;
+  }
+
+  .flow {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .step-label {
+    font-size: 10px;
+    color: #9b8ec4;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-align: center;
+    margin-bottom: 8px;
+  }
+  .step-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    color: #9b8ec444;
+    padding-top: 40px;
+  }
+
+  /* Phone frame */
+  .phone {
+    width: 300px;
+    background: #0d0820;
+    border-radius: 32px;
+    border: 3px solid #2a2060;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    flex-shrink: 0;
+  }
+  .phone-notch {
+    height: 28px;
+    background: #0d0820;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .phone-notch-inner {
+    width: 80px;
+    height: 6px;
+    background: #1a1040;
+    border-radius: 3px;
+  }
+  .phone-screen {
+    background: linear-gradient(135deg, #1a1040 0%, #2d1b69 50%, #1a1040 100%);
+    min-height: 520px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Particles in phone */
+  .phone-particles {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .phone-particles span {
+    position: absolute;
+    font-size: 14px;
+    opacity: 0.1;
+    animation: floaty 12s ease-in-out infinite;
+  }
+  .phone-particles span:nth-child(1) { top: 8%; left: 10%; animation-delay: 0s; }
+  .phone-particles span:nth-child(2) { top: 25%; left: 80%; animation-delay: -3s; font-size: 10px; }
+  .phone-particles span:nth-child(3) { top: 60%; left: 5%; animation-delay: -6s; }
+  .phone-particles span:nth-child(4) { top: 80%; left: 75%; animation-delay: -9s; font-size: 18px; }
+  @keyframes floaty {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-15px) rotate(5deg); }
+  }
+
+  /* Shared UI elements */
+  .screen-logo {
+    font-family: 'Secular One', sans-serif;
+    font-size: 22px;
+    background: linear-gradient(135deg, #f6d365, #fda085);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-align: center;
+    margin-bottom: 4px;
+    position: relative;
+    z-index: 1;
+  }
+  .screen-tagline {
+    font-size: 12px;
+    color: #9b8ec4;
+    text-align: center;
+    margin-bottom: 24px;
+    position: relative;
+    z-index: 1;
+  }
+  .screen-title {
+    font-size: 18px;
+    font-weight: 900;
+    color: #fff;
+    text-align: center;
+    margin-bottom: 4px;
+    position: relative;
+    z-index: 1;
+  }
+  .screen-sub {
+    font-size: 12px;
+    color: #9b8ec4;
+    text-align: center;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .input-group {
+    margin-bottom: 14px;
+    position: relative;
+    z-index: 1;
+  }
+  .input-label {
+    font-size: 11px;
+    color: #9b8ec4;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+  .input-field {
+    width: 100%;
+    padding: 12px 14px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    color: #fff;
+    font-family: 'Rubik', sans-serif;
+    font-size: 15px;
+    outline: none;
+  }
+  .input-field::placeholder { color: #9b8ec455; }
+  .input-field:focus {
+    border-color: rgba(246,211,101,0.4);
+    background: rgba(255,255,255,0.08);
+  }
+  .input-field.filled {
+    border-color: rgba(246,211,101,0.3);
+    color: #f6d365;
+  }
+
+  .btn-primary {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #f6d365, #fda085);
+    border: none;
+    border-radius: 14px;
+    color: #1a1040;
+    font-family: 'Rubik', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    position: relative;
+    z-index: 1;
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin-top: 6px;
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(246,211,101,0.25);
+  }
+
+  .btn-secondary {
+    width: 100%;
+    padding: 14px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 14px;
+    color: #e8e0f0;
+    font-family: 'Rubik', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    position: relative;
+    z-index: 1;
+    transition: all 0.2s;
+  }
+  .btn-secondary:hover {
+    background: rgba(255,255,255,0.1);
+    border-color: rgba(255,255,255,0.2);
+  }
+
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 16px 0;
+    position: relative;
+    z-index: 1;
+  }
+  .divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(255,255,255,0.08);
+  }
+  .divider span {
+    font-size: 12px;
+    color: #9b8ec4;
+  }
+
+  /* Avatar upload */
+  .avatar-upload {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.06);
+    border: 2px dashed rgba(255,255,255,0.15);
+    margin: 0 auto 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    z-index: 1;
+  }
+  .avatar-upload:hover {
+    border-color: rgba(246,211,101,0.4);
+    background: rgba(246,211,101,0.06);
+  }
+  .avatar-upload .cam { font-size: 24px; }
+  .avatar-upload .cam-text { font-size: 9px; color: #9b8ec4; margin-top: 2px; }
+  .avatar-upload.has-photo {
+    border-style: solid;
+    border-color: #f6d365;
+    overflow: hidden;
+  }
+  .avatar-upload.has-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Invite code display */
+  .invite-display {
+    text-align: center;
+    margin: 16px 0;
+    position: relative;
+    z-index: 1;
+  }
+  .invite-code-big {
+    font-family: monospace;
+    font-size: 32px;
+    font-weight: 900;
+    color: #f6d365;
+    letter-spacing: 4px;
+    background: rgba(246,211,101,0.08);
+    padding: 12px 20px;
+    border-radius: 14px;
+    border: 1px solid rgba(246,211,101,0.15);
+    display: inline-block;
+  }
+  .invite-hint {
+    font-size: 12px;
+    color: #9b8ec4;
+    margin-top: 8px;
+  }
+
+  /* Share buttons */
+  .share-buttons {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    position: relative;
+    z-index: 1;
+  }
+  .share-btn {
+    flex: 1;
+    padding: 10px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.04);
+    color: #e8e0f0;
+    font-family: 'Rubik', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s;
+  }
+  .share-btn:hover { background: rgba(255,255,255,0.08); }
+  .share-btn.whatsapp { border-color: rgba(37,211,102,0.3); color: #25d366; }
+  .share-btn.whatsapp:hover { background: rgba(37,211,102,0.08); }
+  .share-btn.copy { border-color: rgba(246,211,101,0.2); color: #f6d365; }
+
+  /* Member list (waiting room) */
+  .member-list {
+    position: relative;
+    z-index: 1;
+  }
+  .member-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 12px;
+    margin-bottom: 6px;
+  }
+  .member-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid rgba(255,255,255,0.1);
+    flex-shrink: 0;
+  }
+  .member-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .member-avatar.initial {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #6ee7a0, #3b9c6b);
+    color: #0a2a14;
+    font-weight: 700;
+    font-size: 14px;
+  }
+  .member-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    flex: 1;
+  }
+  .member-tag {
+    font-size: 10px;
+    color: #f6d365;
+    background: rgba(246,211,101,0.1);
+    padding: 2px 8px;
+    border-radius: 8px;
+  }
+  .member-status {
+    font-size: 11px;
+    color: #6ee7a0;
+  }
+
+  /* Prediction form */
+  .pred-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 12px;
+    margin-bottom: 6px;
+    position: relative;
+    z-index: 1;
+  }
+  .pred-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid rgba(255,255,255,0.1);
+    flex-shrink: 0;
+  }
+  .pred-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .pred-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    flex: 1;
+  }
+  .pred-input {
+    width: 56px;
+    padding: 8px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 10px;
+    color: #fff;
+    font-family: 'Rubik', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    text-align: center;
+    outline: none;
+  }
+  .pred-input:focus { border-color: rgba(246,211,101,0.4); }
+  .pred-input.locked {
+    background: rgba(246,211,101,0.1);
+    border-color: rgba(246,211,101,0.2);
+    color: #f6d365;
+  }
+  .pred-self {
+    font-size: 10px;
+    color: #9b8ec4;
+  }
+
+  /* Slider */
+  .pred-slider-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 12px;
+    margin-bottom: 8px;
+    position: relative;
+    z-index: 1;
+  }
+  .pred-slider-info {
+    flex: 1;
+    min-width: 0;
+  }
+  .pred-slider-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .slider-wrap {
+    width: 100%;
+    margin-top: 6px;
+    position: relative;
+  }
+  .slider-track {
+    width: 100%;
+    height: 6px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 3px;
+    position: relative;
+  }
+  .slider-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #fda085, #f6d365);
+    border-radius: 3px;
+  }
+  .slider-thumb {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 20px;
+    height: 20px;
+    background: #f6d365;
+    border-radius: 50%;
+    border: 3px solid #1a1040;
+    box-shadow: 0 2px 8px rgba(246,211,101,0.3);
+  }
+  .slider-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 4px;
+    font-size: 9px;
+    color: #9b8ec4;
+  }
+  .pred-day-badge {
+    background: rgba(246,211,101,0.12);
+    border: 1px solid rgba(246,211,101,0.2);
+    border-radius: 10px;
+    padding: 6px 12px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+  .pred-day-num {
+    font-size: 20px;
+    font-weight: 900;
+    color: #f6d365;
+  }
+  .pred-day-label {
+    font-size: 8px;
+    color: #9b8ec4;
+    text-transform: uppercase;
+  }
+
+  /* Countdown */
+  .countdown {
+    text-align: center;
+    margin: 20px 0 12px;
+    position: relative;
+    z-index: 1;
+  }
+  .countdown-label {
+    font-size: 11px;
+    color: #9b8ec4;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .countdown-val {
+    font-size: 20px;
+    font-weight: 900;
+    color: #fda085;
+    margin-top: 2px;
+  }
+</style>
+</head>
+<body>
+
+<div class="flow">
+
+  <!-- ===== STEP 1: LANDING ===== -->
+  <div>
+    <div class="step-label">Step 1 · Landing</div>
+    <div class="phone">
+      <div class="phone-notch"><div class="phone-notch-inner"></div></div>
+      <div class="phone-screen" style="display: flex; flex-direction: column; justify-content: center;">
+        <div class="phone-particles">
+          <span>✨</span><span>🌙</span><span>⭐</span><span>🔥</span>
+        </div>
+
+        <div style="text-align: center; margin-bottom: 32px; position: relative; z-index: 1;">
+          <div style="font-size: 48px; margin-bottom: 8px;">🔥</div>
+          <div class="screen-logo" style="font-size: 28px;">Sfira Madness</div>
+          <div style="font-size: 13px; color: #9b8ec4; margin-top: 6px; line-height: 1.5;">
+            Predict your friends.<br>Count the Omer.<br>Bragging rights for 49 days.
+          </div>
+        </div>
+
+        <button class="btn-primary" style="margin-bottom: 10px;">🏆 Create a Group</button>
+        <button class="btn-secondary">Join with Code</button>
+
+        <div style="text-align: center; margin-top: 24px; position: relative; z-index: 1;">
+          <div style="font-size: 11px; color: #9b8ec466;">Omer starts in 12 days</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step-arrow">→</div>
+
+  <!-- ===== STEP 2: CREATE GROUP ===== -->
+  <div>
+    <div class="step-label">Step 2 · Create Group</div>
+    <div class="phone">
+      <div class="phone-notch"><div class="phone-notch-inner"></div></div>
+      <div class="phone-screen">
+        <div class="phone-particles">
+          <span>✨</span><span>🌙</span><span>⭐</span><span>🔥</span>
+        </div>
+
+        <div class="screen-logo">Sfira Madness 🔥</div>
+        <div class="screen-sub" style="margin-bottom: 20px;">Set up your group</div>
+
+        <div class="avatar-upload has-photo">
+          <img src="https://i.pravatar.cc/160?img=68" alt="Your photo">
+        </div>
+
+        <div class="input-group">
+          <div class="input-label">Your Name</div>
+          <input class="input-field filled" type="text" value="Shlomo" readonly>
+        </div>
+
+        <div class="input-group">
+          <div class="input-label">Group Name</div>
+          <input class="input-field filled" type="text" value="The Shul Boys" readonly>
+        </div>
+
+        <button class="btn-primary" style="margin-top: 16px;">Create Group 🎉</button>
+
+        <div style="text-align: center; margin-top: 16px; position: relative; z-index: 1;">
+          <span style="font-size: 12px; color: #9b8ec4;">Already have a code? </span>
+          <span style="font-size: 12px; color: #f6d365; cursor: pointer;">Join instead</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step-arrow">→</div>
+
+  <!-- ===== STEP 3: INVITE / WAITING ROOM ===== -->
+  <div>
+    <div class="step-label">Step 3 · Invite Friends</div>
+    <div class="phone">
+      <div class="phone-notch"><div class="phone-notch-inner"></div></div>
+      <div class="phone-screen">
+        <div class="phone-particles">
+          <span>✨</span><span>🌙</span><span>⭐</span><span>🔥</span>
+        </div>
+
+        <div class="screen-logo">The Shul Boys</div>
+        <div class="screen-sub">Share this code with your friends</div>
+
+        <div class="invite-display">
+          <div class="invite-code-big">SHU-L42</div>
+          <div class="invite-hint">or share the link below</div>
+        </div>
+
+        <div class="share-buttons">
+          <button class="share-btn whatsapp">📱 WhatsApp</button>
+          <button class="share-btn copy">📋 Copy Link</button>
+        </div>
+
+        <div style="margin-top: 20px; position: relative; z-index: 1;">
+          <div style="font-size: 11px; color: #9b8ec4; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+            Joined (3 of ?)
+            <span style="flex: 1; height: 1px; background: rgba(255,255,255,0.06);"></span>
+          </div>
+
+          <div class="member-row">
+            <div class="member-avatar"><img src="https://i.pravatar.cc/72?img=68"></div>
+            <div class="member-name">Shlomo</div>
+            <div class="member-tag">Creator</div>
+          </div>
+          <div class="member-row">
+            <div class="member-avatar"><img src="https://i.pravatar.cc/72?img=33"></div>
+            <div class="member-name">Avi</div>
+            <div class="member-status">✓ joined</div>
+          </div>
+          <div class="member-row">
+            <div class="member-avatar initial">D</div>
+            <div class="member-name">Dov</div>
+            <div class="member-status">✓ joined</div>
+          </div>
+
+          <div class="member-row" style="border: 1px dashed rgba(255,255,255,0.1); background: none;">
+            <div style="width: 36px; height: 36px; border-radius: 50%; border: 1px dashed rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; font-size: 16px; color: #9b8ec444;">+</div>
+            <div style="font-size: 13px; color: #9b8ec455;">Waiting for more friends...</div>
+          </div>
+        </div>
+
+        <div class="countdown">
+          <div class="countdown-label">Predictions lock in</div>
+          <div class="countdown-val">12 days, 4 hours</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step-arrow">→</div>
+
+  <!-- ===== STEP 4: PREDICTIONS ===== -->
+  <div>
+    <div class="step-label">Step 4 · Make Predictions</div>
+    <div class="phone">
+      <div class="phone-notch"><div class="phone-notch-inner"></div></div>
+      <div class="phone-screen">
+        <div class="phone-particles">
+          <span>✨</span><span>🌙</span><span>⭐</span><span>🔥</span>
+        </div>
+
+        <div class="screen-logo">Your Predictions</div>
+        <div class="screen-sub">How far will each person make it?</div>
+
+        <!-- Slider-based prediction -->
+        <div class="pred-slider-row">
+          <div class="pred-avatar"><img src="https://i.pravatar.cc/72?img=33" style="width:100%;height:100%;object-fit:cover;"></div>
+          <div class="pred-slider-info">
+            <div class="pred-slider-name">Avi</div>
+            <div class="slider-wrap">
+              <div class="slider-track">
+                <div class="slider-fill" style="width: 71%;"></div>
+                <div class="slider-thumb" style="left: 71%;"></div>
+              </div>
+              <div class="slider-labels">
+                <span>1</span>
+                <span>49</span>
+              </div>
+            </div>
+          </div>
+          <div class="pred-day-badge">
+            <div class="pred-day-num">35</div>
+            <div class="pred-day-label">days</div>
+          </div>
+        </div>
+
+        <div class="pred-slider-row">
+          <div class="pred-avatar" style="border-color: rgba(255,255,255,0.1);"><img src="https://i.pravatar.cc/72?img=12" style="width:100%;height:100%;object-fit:cover;"></div>
+          <div class="pred-slider-info">
+            <div class="pred-slider-name">Dov</div>
+            <div class="slider-wrap">
+              <div class="slider-track">
+                <div class="slider-fill" style="width: 100%;"></div>
+                <div class="slider-thumb" style="left: 100%;"></div>
+              </div>
+              <div class="slider-labels">
+                <span>1</span>
+                <span>49</span>
+              </div>
+            </div>
+          </div>
+          <div class="pred-day-badge">
+            <div class="pred-day-num">49</div>
+            <div class="pred-day-label">days</div>
+          </div>
+        </div>
+
+        <div class="pred-slider-row">
+          <div class="pred-avatar"><img src="https://i.pravatar.cc/72?img=59" style="width:100%;height:100%;object-fit:cover;"></div>
+          <div class="pred-slider-info">
+            <div class="pred-slider-name">Moshe</div>
+            <div class="slider-wrap">
+              <div class="slider-track">
+                <div class="slider-fill" style="width: 57%;"></div>
+                <div class="slider-thumb" style="left: 57%;"></div>
+              </div>
+              <div class="slider-labels">
+                <span>1</span>
+                <span>49</span>
+              </div>
+            </div>
+          </div>
+          <div class="pred-day-badge">
+            <div class="pred-day-num">28</div>
+            <div class="pred-day-label">days</div>
+          </div>
+        </div>
+
+        <!-- Self - locked -->
+        <div class="pred-slider-row" style="background: rgba(246,211,101,0.06); border: 1px solid rgba(246,211,101,0.12); border-radius: 12px;">
+          <div class="pred-avatar" style="border-color: #f6d365;"><img src="https://i.pravatar.cc/72?img=68" style="width:100%;height:100%;object-fit:cover;"></div>
+          <div class="pred-slider-info">
+            <div class="pred-slider-name">You <span style="font-size: 10px; color: #9b8ec4; font-weight: 400; margin-left: 4px;">always 49</span></div>
+            <div style="font-size: 11px; color: #9b8ec4; margin-top: 4px; line-height: 1.4;">
+              You're committed to the full 49.<br>
+              <span style="color: #fda085;">Miss a day? You eat the penalty 💀</span>
+            </div>
+          </div>
+          <div class="pred-day-badge" style="background: rgba(246,211,101,0.15); border-color: rgba(246,211,101,0.3);">
+            <div class="pred-day-num" style="color: #f6d365;">49</div>
+            <div class="pred-day-label">locked</div>
+          </div>
+        </div>
+
+        <button class="btn-primary" style="margin-top: 14px;">🔒 Lock In Predictions</button>
+
+        <div class="countdown">
+          <div class="countdown-label">Deadline</div>
+          <div class="countdown-val">2 days, 8 hours</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Secular+One&family=Rubik:wght@400;600;700;900&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: linear-gradient(135deg, #1a1040 0%, #2d1b69 30%, #1a1040 60%, #0f2027 100%);
+    color: #e8e0f0;
+    font-family: 'Rubik', system-ui, sans-serif;
+    min-height: 100vh;
+    padding: 20px;
+  }
+
+  .flow {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .step-label {
+    font-size: 10px;
+    color: #9b8ec4;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-align: center;
+    margin-bottom: 8px;
+  }
+  .step-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    color: #9b8ec444;
+    padding-top: 40px;
+  }
+
+  /* Phone frame */
+  .phone {
+    width: 300px;
+    background: #0d0820;
+    border-radius: 32px;
+    border: 3px solid #2a2060;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    flex-shrink: 0;
+  }
+  .phone-notch {
+    height: 28px;
+    background: #0d0820;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .phone-notch-inner {
+    width: 80px;
+    height: 6px;
+    background: #1a1040;
+    border-radius: 3px;
+  }
+  .phone-screen {
+    background: linear-gradient(135deg, #1a1040 0%, #2d1b69 50%, #1a1040 100%);
+    min-height: 520px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .phone-particles {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none;
+  }
+  .phone-particles span {
+    position: absolute;
+    font-size: 14px;
+    opacity: 0.1;
+    animation: floaty 12s ease-in-out infinite;
+  }
+  .phone-particles span:nth-child(1) { top: 8%; left: 10%; animation-delay: 0s; }
+  .phone-particles span:nth-child(2) { top: 25%; left: 80%; animation-delay: -3s; font-size: 10px; }
+  .phone-particles span:nth-child(3) { top: 60%; left: 5%; animation-delay: -6s; }
+  .phone-particles span:nth-child(4) { top: 80%; left: 75%; animation-delay: -9s; font-size: 18px; }
+  @keyframes floaty {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-15px) rotate(5deg); }
+  }
+
+  .screen-logo {
+    font-family: 'Secular One', sans-serif;
+    font-size: 22px;
+    background: linear-gradient(135deg, #f6d365, #fda085);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-align: center;
+    margin-bottom: 4px;
+    position: relative;
+    z-index: 1;
+  }
+  .screen-sub {
+    font-size: 12px;
+    color: #9b8ec4;
+    text-align: center;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .input-group {
+    margin-bottom: 14px;
+    position: relative;
+    z-index: 1;
+  }
+  .input-label {
+    font-size: 11px;
+    color: #9b8ec4;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+  .input-field {
+    width: 100%;
+    padding: 12px 14px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    color: #fff;
+    font-family: 'Rubik', sans-serif;
+    font-size: 15px;
+    outline: none;
+  }
+  .input-field::placeholder { color: #9b8ec455; }
+  .input-field.filled {
+    border-color: rgba(246,211,101,0.3);
+    color: #f6d365;
+  }
+
+  /* Big code input */
+  .code-input-wrap {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin: 20px 0;
+    position: relative;
+    z-index: 1;
+  }
+  .code-char {
+    width: 44px;
+    height: 56px;
+    background: rgba(255,255,255,0.06);
+    border: 2px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: monospace;
+    font-size: 24px;
+    font-weight: 900;
+    color: #f6d365;
+  }
+  .code-char.active {
+    border-color: rgba(246,211,101,0.5);
+    background: rgba(246,211,101,0.06);
+    box-shadow: 0 0 12px rgba(246,211,101,0.15);
+  }
+  .code-char.empty {
+    color: #9b8ec433;
+  }
+  .code-dash {
+    display: flex;
+    align-items: center;
+    font-size: 20px;
+    color: #9b8ec444;
+    font-weight: 700;
+  }
+
+  .btn-primary {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #f6d365, #fda085);
+    border: none;
+    border-radius: 14px;
+    color: #1a1040;
+    font-family: 'Rubik', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    position: relative;
+    z-index: 1;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(246,211,101,0.25);
+  }
+  .btn-primary.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  /* Group preview card */
+  .group-preview {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(110,231,160,0.2);
+    border-radius: 16px;
+    padding: 16px;
+    margin: 16px 0;
+    position: relative;
+    z-index: 1;
+    animation: fadeSlideIn 0.3s ease;
+  }
+  @keyframes fadeSlideIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .group-preview-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .group-preview-icon {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, rgba(246,211,101,0.15), rgba(253,160,133,0.1));
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+  }
+  .group-preview-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+  }
+  .group-preview-meta {
+    font-size: 11px;
+    color: #9b8ec4;
+  }
+  .group-preview-members {
+    display: flex;
+    gap: -6px;
+    margin-top: 10px;
+  }
+  .gp-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid #1a1040;
+    margin-left: -6px;
+  }
+  .gp-avatar:first-child { margin-left: 0; }
+  .gp-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .gp-avatar.initial {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #6ee7a0, #3b9c6b);
+    color: #0a2a14;
+    font-weight: 700;
+    font-size: 12px;
+  }
+  .gp-avatar.more {
+    background: rgba(255,255,255,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    color: #9b8ec4;
+  }
+  .gp-names {
+    font-size: 11px;
+    color: #9b8ec4;
+    margin-top: 6px;
+    margin-left: 2px;
+  }
+
+  /* Avatar upload */
+  .avatar-upload {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.06);
+    border: 2px dashed rgba(255,255,255,0.15);
+    margin: 0 auto 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    z-index: 1;
+  }
+  .avatar-upload:hover {
+    border-color: rgba(246,211,101,0.4);
+    background: rgba(246,211,101,0.06);
+  }
+  .avatar-upload .cam { font-size: 24px; }
+  .avatar-upload .cam-text { font-size: 9px; color: #9b8ec4; margin-top: 2px; }
+
+  /* Confirmed card */
+  .confirmed-card {
+    background: rgba(110,231,160,0.06);
+    border: 1px solid rgba(110,231,160,0.2);
+    border-radius: 16px;
+    padding: 24px;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    animation: fadeSlideIn 0.4s ease;
+  }
+  .confirmed-emoji { font-size: 48px; margin-bottom: 8px; }
+  .confirmed-title {
+    font-size: 18px;
+    font-weight: 900;
+    color: #6ee7a0;
+  }
+  .confirmed-detail {
+    font-size: 13px;
+    color: #9b8ec4;
+    margin-top: 4px;
+    line-height: 1.5;
+  }
+  .confirmed-members {
+    display: flex;
+    justify-content: center;
+    margin-top: 14px;
+  }
+
+  .btn-ghost {
+    width: 100%;
+    padding: 12px;
+    background: none;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    color: #9b8ec4;
+    font-family: 'Rubik', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    position: relative;
+    z-index: 1;
+    transition: all 0.2s;
+    margin-top: 8px;
+  }
+  .btn-ghost:hover {
+    background: rgba(255,255,255,0.04);
+    color: #e8e0f0;
+  }
+
+  /* Note callout */
+  .note {
+    position: relative;
+    z-index: 1;
+    margin-top: 20px;
+    padding: 12px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 10px;
+    border-left: 3px solid #9b8ec444;
+  }
+  .note-text {
+    font-size: 11px;
+    color: #9b8ec4;
+    line-height: 1.5;
+  }
+</style>
+</head>
+<body>
+
+<div class="flow">
+
+  <!-- ===== STEP 1: ENTER CODE ===== -->
+  <div>
+    <div class="step-label">Step 1 · Enter Code</div>
+    <div class="phone">
+      <div class="phone-notch"><div class="phone-notch-inner"></div></div>
+      <div class="phone-screen" style="display: flex; flex-direction: column; justify-content: center;">
+        <div class="phone-particles">
+          <span>✨</span><span>🌙</span><span>⭐</span><span>🔥</span>
+        </div>
+
+        <div class="screen-logo">Join a Group</div>
+        <div class="screen-sub">Enter the code your friend shared</div>
+
+        <div class="code-input-wrap">
+          <div class="code-char">S</div>
+          <div class="code-char">H</div>
+          <div class="code-char">U</div>
+          <div class="code-dash">—</div>
+          <div class="code-char">L</div>
+          <div class="code-char">4</div>
+          <div class="code-char active">2</div>
+        </div>
+
+        <!-- Group found preview -->
+        <div class="group-preview">
+          <div class="group-preview-header">
+            <div class="group-preview-icon">🔥</div>
+            <div>
+              <div class="group-preview-name">The Shul Boys</div>
+              <div class="group-preview-meta">Created by Shlomo · 3 members</div>
+            </div>
+          </div>
+          <div class="group-preview-members">
+            <div class="gp-avatar"><img src="https://i.pravatar.cc/64?img=68"></div>
+            <div class="gp-avatar"><img src="https://i.pravatar.cc/64?img=33"></div>
+            <div class="gp-avatar initial">D</div>
+          </div>
+          <div class="gp-names">Shlomo, Avi, Dov</div>
+        </div>
+
+        <button class="btn-primary">Join This Group →</button>
+
+        <div class="note">
+          <div class="note-text">💡 If you got a link instead of a code, just tap it — it'll bring you right here.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step-arrow">→</div>
+
+  <!-- ===== STEP 2: SET UP PROFILE ===== -->
+  <div>
+    <div class="step-label">Step 2 · Your Profile</div>
+    <div class="phone">
+      <div class="phone-notch"><div class="phone-notch-inner"></div></div>
+      <div class="phone-screen">
+        <div class="phone-particles">
+          <span>✨</span><span>🌙</span><span>⭐</span><span>🔥</span>
+        </div>
+
+        <div class="screen-logo">Almost There!</div>
+        <div class="screen-sub">Set up your profile for The Shul Boys</div>
+
+        <div class="avatar-upload">
+          <div class="cam">📷</div>
+          <div class="cam-text">Add photo</div>
+        </div>
+
+        <div class="input-group">
+          <div class="input-label">Your Name</div>
+          <input class="input-field" type="text" placeholder="How your friends know you" readonly>
+        </div>
+
+        <div style="position: relative; z-index: 1; margin: 16px 0 8px;">
+          <div style="font-size: 11px; color: #9b8ec4; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">You're joining</div>
+          <div style="display: flex; align-items: center; gap: 10px; padding: 12px; background: rgba(255,255,255,0.04); border-radius: 12px;">
+            <div style="font-size: 24px;">🔥</div>
+            <div>
+              <div style="font-size: 14px; font-weight: 700; color: #fff;">The Shul Boys</div>
+              <div style="font-size: 11px; color: #9b8ec4;">3 members waiting for you</div>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn-primary" style="margin-top: 16px;">Join Group 🎉</button>
+
+        <div class="note">
+          <div class="note-text">📸 Photo is optional — you'll get a colored initial if you skip it.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step-arrow">→</div>
+
+  <!-- ===== STEP 3: CONFIRMED ===== -->
+  <div>
+    <div class="step-label">Step 3 · You're In!</div>
+    <div class="phone">
+      <div class="phone-notch"><div class="phone-notch-inner"></div></div>
+      <div class="phone-screen" style="display: flex; flex-direction: column; justify-content: center;">
+        <div class="phone-particles">
+          <span>✨</span><span>🌙</span><span>⭐</span><span>🔥</span>
+        </div>
+
+        <div class="confirmed-card">
+          <div class="confirmed-emoji">🎉</div>
+          <div class="confirmed-title">You're in!</div>
+          <div class="confirmed-detail">
+            Welcome to <strong style="color: #fff;">The Shul Boys</strong><br>
+            You've got 12 days to make your predictions
+          </div>
+          <div class="confirmed-members" style="margin-top: 16px;">
+            <div class="gp-avatar"><img src="https://i.pravatar.cc/64?img=68"></div>
+            <div class="gp-avatar"><img src="https://i.pravatar.cc/64?img=33"></div>
+            <div class="gp-avatar initial">D</div>
+            <div class="gp-avatar" style="border-color: #f6d365;"><img src="https://i.pravatar.cc/64?img=51"></div>
+          </div>
+          <div class="gp-names" style="text-align: center;">Shlomo, Avi, Dov, and <span style="color: #f6d365;">you</span></div>
+        </div>
+
+        <button class="btn-primary" style="margin-top: 16px;">Make My Predictions →</button>
+        <button class="btn-ghost">I'll do it later</button>
+
+        <div class="note" style="margin-top: 16px;">
+          <div class="note-text">⏰ Predictions lock when Omer starts. Don't forget!</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div style="max-width: 700px; margin: 40px auto 0; padding: 20px;">
+  <div style="font-size: 11px; color: #9b8ec4; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+    Alternative Entry: Direct Link
+    <span style="flex: 1; height: 1px; background: rgba(255,255,255,0.06);"></span>
+  </div>
+  <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+    <div style="flex: 1; min-width: 280px; background: rgba(255,255,255,0.04); border-radius: 14px; padding: 16px; border: 1px solid rgba(255,255,255,0.06);">
+      <div style="font-size: 13px; color: #fff; font-weight: 700; margin-bottom: 8px;">Link Join (most common path)</div>
+      <div style="font-size: 12px; color: #9b8ec4; line-height: 1.6;">
+        When a friend shares via WhatsApp, they send a link like:<br>
+        <code style="background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 4px; color: #f6d365; font-size: 11px;">sfira-madness.vercel.app/join/SHU-L42</code><br><br>
+        Tapping the link skips Step 1 entirely — goes straight to the profile setup with the group already loaded. Zero friction.
+      </div>
+    </div>
+    <div style="flex: 1; min-width: 280px; background: rgba(255,255,255,0.04); border-radius: 14px; padding: 16px; border: 1px solid rgba(255,255,255,0.06);">
+      <div style="font-size: 13px; color: #fff; font-weight: 700; margin-bottom: 8px;">Cookie Reclaim Flow</div>
+      <div style="font-size: 12px; color: #9b8ec4; line-height: 1.6;">
+        If someone clears their cookies or switches devices:<br><br>
+        1. Visit the group link<br>
+        2. App sees no cookie → shows "Already a member?"<br>
+        3. Tap their name from the member list<br>
+        4. Confirm with a simple challenge (e.g. "What day did Benny stop?")<br>
+        5. Cookie re-issued
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
