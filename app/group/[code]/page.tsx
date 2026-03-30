@@ -10,6 +10,7 @@ import { Leaderboard } from "@/components/leaderboard";
 import { RevealCard } from "@/components/reveal-card";
 import { InviteCode } from "@/components/invite-code";
 import { ShareButton } from "@/components/share-button";
+import { ScreenshotShare } from "@/components/screenshot-share";
 import { AchievementBadge } from "@/components/achievement-badge";
 import { DashboardActions } from "./dashboard-actions";
 import Link from "next/link";
@@ -256,17 +257,24 @@ export default async function GroupDashboard({ params }: Props) {
         )}
 
         {/* Leaderboard */}
-        {scores.length > 0 && (
+        {resolvedMembers.length > 0 && scores.length > 0 && (
           <div className="mt-6">
             <SectionHeader>Leaderboard</SectionHeader>
-            <Leaderboard
-              entries={scores.map((s) => ({
-                ...s,
-                isYou: member?.id === s.memberId,
-              }))}
-              resolvedCount={resolvedMembers.length}
-              totalMembers={members.length}
-            />
+            <ScreenshotShare filename="sfira-leaderboard">
+              <div className="p-3">
+                <div className="text-center text-[11px] text-cosmos-muted mb-2 font-semibold uppercase tracking-widest">
+                  {group.name} — Leaderboard
+                </div>
+                <Leaderboard
+                  entries={scores.map((s) => ({
+                    ...s,
+                    isYou: member?.id === s.memberId,
+                  }))}
+                  resolvedCount={resolvedMembers.length}
+                  totalMembers={members.length}
+                />
+              </div>
+            </ScreenshotShare>
           </div>
         )}
 
@@ -274,17 +282,24 @@ export default async function GroupDashboard({ params }: Props) {
         {member && (phase === "during" || phase === "post") && (
           <div className="mt-6">
             <SectionHeader>Achievements</SectionHeader>
-            <div className="flex flex-wrap gap-2">
-              {ACHIEVEMENTS.map((a) => (
-                <AchievementBadge
-                  key={a.id}
-                  emoji={a.emoji}
-                  name={a.name}
-                  description={a.description}
-                  earned={earnedAchievements.includes(a.id)}
-                />
-              ))}
-            </div>
+            <ScreenshotShare filename="sfira-achievements">
+              <div className="p-3">
+                <div className="text-center text-[11px] text-cosmos-muted mb-2 font-semibold uppercase tracking-widest">
+                  {member.name}&apos;s Achievements
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {ACHIEVEMENTS.map((a) => (
+                    <AchievementBadge
+                      key={a.id}
+                      emoji={a.emoji}
+                      name={a.name}
+                      description={a.description}
+                      earned={earnedAchievements.includes(a.id)}
+                    />
+                  ))}
+                </div>
+              </div>
+            </ScreenshotShare>
           </div>
         )}
 
@@ -345,11 +360,9 @@ export default async function GroupDashboard({ params }: Props) {
                   >
                     <div className="w-9 h-9 rounded-full overflow-hidden border-2 border-cosmos-border flex-shrink-0">
                       {m.avatar_url ? (
-                        <img
-                          src={m.avatar_url}
-                          alt={m.name}
-                          className="w-full h-full object-cover"
-                        />
+                        <div className="w-full h-full bg-gradient-to-br from-counting/20 to-counting/5 flex items-center justify-center text-lg">
+                          {m.avatar_url}
+                        </div>
                       ) : (
                         <div className="w-full h-full bg-gradient-to-br from-counting to-counting/60 flex items-center justify-center text-sm font-bold text-cosmos-deep">
                           {m.name[0]}

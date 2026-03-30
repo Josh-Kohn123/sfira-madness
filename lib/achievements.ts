@@ -29,11 +29,14 @@ export async function getEarnedAchievements(
     SELECT eliminated_on_day FROM members WHERE id = ${memberId}
   `;
   const elim = member[0]?.eliminated_on_day;
-  const effectiveDay = elim ?? (currentDay ?? 0);
+  // How far they actually got: if eliminated, their last day; if still counting, current day
+  const reachedDay = elim ?? (currentDay ?? 0);
 
-  if (effectiveDay >= 7 && elim === null) earned.push("week-one");
-  if (effectiveDay >= 25 && elim === null) earned.push("halfway");
-  if (effectiveDay >= 33 && elim === null) earned.push("lag-baomer");
+  // Milestone achievements stay earned even after elimination
+  if (reachedDay >= 7) earned.push("week-one");
+  if (reachedDay >= 25) earned.push("halfway");
+  if (reachedDay >= 33) earned.push("lag-baomer");
+  // Iron Will requires making it through all 49 without elimination
   if (currentDay === null && elim === null) earned.push("iron-will");
 
   const predictions = await queryMany<{

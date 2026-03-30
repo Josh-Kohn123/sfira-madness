@@ -38,7 +38,15 @@ export function PlayerCard({
         }`}
       >
         {avatarUrl ? (
-          <img src={avatarUrl} alt={name} className="w-full h-full object-cover" />
+          <div
+            className={`w-full h-full flex items-center justify-center text-xl ${
+              isCounting
+                ? "bg-gradient-to-br from-counting/20 to-counting/5"
+                : "bg-gradient-to-br from-stopped/20 to-stopped/5"
+            }`}
+          >
+            {avatarUrl}
+          </div>
         ) : (
           <div
             className={`w-full h-full flex items-center justify-center text-base font-bold ${

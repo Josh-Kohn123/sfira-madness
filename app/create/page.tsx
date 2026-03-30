@@ -5,11 +5,11 @@ import { Particles } from "@/components/ui/particles";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PinInput } from "@/components/pin-input";
-import { AvatarUpload } from "@/components/avatar-upload";
+import { EmojiPicker } from "@/components/emoji-picker";
 import { createGroup } from "@/lib/actions/groups";
 
 export default function CreatePage() {
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [emoji, setEmoji] = useState<string | null>(null);
   const [pin, setPin] = useState("");
 
   return (
@@ -27,8 +27,8 @@ export default function CreatePage() {
         </p>
 
         <form action={createGroup}>
-          <AvatarUpload onUploaded={setAvatarUrl} />
-          <input type="hidden" name="avatarUrl" value={avatarUrl ?? ""} />
+          <EmojiPicker onSelect={setEmoji} />
+          <input type="hidden" name="avatarUrl" value={emoji ?? ""} />
 
           <div className="mt-4 space-y-3">
             <Input name="name" label="Your Name" placeholder="How your friends know you" required />

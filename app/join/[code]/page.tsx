@@ -72,7 +72,9 @@ export default async function JoinPage({ params }: Props) {
                 className="w-8 h-8 rounded-full border-2 border-cosmos-deep overflow-hidden"
               >
                 {m.avatar_url ? (
-                  <img src={m.avatar_url} alt={m.name} className="w-full h-full object-cover" />
+                  <div className="w-full h-full bg-gradient-to-br from-counting/20 to-counting/5 flex items-center justify-center text-lg">
+                    {m.avatar_url}
+                  </div>
                 ) : (
                   <div className="w-full h-full bg-gradient-to-br from-counting to-counting/60 flex items-center justify-center text-xs font-bold text-cosmos-deep">
                     {m.name[0]}
