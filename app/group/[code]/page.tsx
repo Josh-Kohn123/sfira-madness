@@ -411,8 +411,8 @@ export default async function GroupDashboard({ params }: Props) {
           <div className="mt-6 text-center">
             <p className="text-xs text-cosmos-muted">
               Already a member?{" "}
-              <Link href={`/join/${code}`} className="text-gold">
-                Reclaim your account →
+              <Link href={`/reclaim/${code}`} className="text-gold">
+                Log back in →
               </Link>
             </p>
           </div>
