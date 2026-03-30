@@ -10,6 +10,7 @@ export async function createGroup(formData: FormData) {
   const groupName = (formData.get("groupName") as string)?.trim();
   const pin = formData.get("pin") as string;
   const avatarUrl = (formData.get("avatarUrl") as string) || null;
+  const reminders = formData.get("reminders") === "true";
 
   if (!name || !groupName || !pin || pin.length !== 4) {
     throw new Error("Missing required fields");
@@ -26,8 +27,8 @@ export async function createGroup(formData: FormData) {
   `;
 
   const [member] = await db`
-    INSERT INTO members (group_id, name, pin_hash, avatar_url, is_creator)
-    VALUES (${group.id}, ${name}, ${pinHash}, ${avatarUrl}, true)
+    INSERT INTO members (group_id, name, pin_hash, avatar_url, is_creator, reminders_enabled)
+    VALUES (${group.id}, ${name}, ${pinHash}, ${avatarUrl}, true, ${reminders})
     RETURNING cookie_token
   `;
 
@@ -40,6 +41,7 @@ export async function joinGroup(formData: FormData) {
   const pin = formData.get("pin") as string;
   const inviteCode = (formData.get("inviteCode") as string)?.trim();
   const avatarUrl = (formData.get("avatarUrl") as string) || null;
+  const reminders = formData.get("reminders") === "true";
 
   if (!name || !pin || pin.length !== 4 || !inviteCode) {
     throw new Error("Missing required fields");
@@ -61,8 +63,8 @@ export async function joinGroup(formData: FormData) {
   const pinHash = await hashPin(pin);
 
   const [member] = await db`
-    INSERT INTO members (group_id, name, pin_hash, avatar_url)
-    VALUES (${group.id}, ${name}, ${pinHash}, ${avatarUrl})
+    INSERT INTO members (group_id, name, pin_hash, avatar_url, reminders_enabled)
+    VALUES (${group.id}, ${name}, ${pinHash}, ${avatarUrl}, ${reminders})
     RETURNING cookie_token
   `;
 

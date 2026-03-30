@@ -6,11 +6,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PinInput } from "@/components/pin-input";
 import { EmojiPicker } from "@/components/emoji-picker";
+import { ReminderSetup } from "@/components/reminder-setup";
 import { createGroup } from "@/lib/actions/groups";
 
 export default function CreatePage() {
   const [emoji, setEmoji] = useState<string | null>(null);
   const [pin, setPin] = useState("");
+  const [reminders, setReminders] = useState(false);
 
   return (
     <main className="relative flex min-h-screen flex-col items-center justify-center p-6">
@@ -44,6 +46,9 @@ export default function CreatePage() {
               <PinInput value={pin} onChange={setPin} />
               <input type="hidden" name="pin" value={pin} />
             </div>
+
+            <ReminderSetup onToggle={setReminders} />
+            <input type="hidden" name="reminders" value={String(reminders)} />
           </div>
 
           <Button type="submit" className="mt-6" disabled={pin.length !== 4}>

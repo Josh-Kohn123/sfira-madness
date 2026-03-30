@@ -11,6 +11,8 @@ import { RevealCard } from "@/components/reveal-card";
 import { InviteCode } from "@/components/invite-code";
 import { ShareButton } from "@/components/share-button";
 import { ScreenshotShare } from "@/components/screenshot-share";
+import { ReminderToggle } from "@/components/reminder-toggle";
+import { PushSubscriber } from "@/components/push-subscriber";
 import { AchievementBadge } from "@/components/achievement-badge";
 import { DashboardActions } from "./dashboard-actions";
 import Link from "next/link";
@@ -302,6 +304,17 @@ export default async function GroupDashboard({ params }: Props) {
             </ScreenshotShare>
           </div>
         )}
+
+        {/* Reminders toggle (during phase) */}
+        {member && phase === "during" && (
+          <div className="mt-6">
+            <SectionHeader>Reminders</SectionHeader>
+            <ReminderToggle enabled={member.reminders_enabled ?? false} />
+          </div>
+        )}
+
+        {/* Auto-subscribe to push if reminders enabled */}
+        {member && <PushSubscriber remindersEnabled={member.reminders_enabled ?? false} />}
 
         {/* Actions (client component for self-report + reactions) */}
         {member && phase === "during" && !member.eliminated_on_day && (

@@ -5,11 +5,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PinInput } from "@/components/pin-input";
 import { EmojiPicker } from "@/components/emoji-picker";
+import { ReminderSetup } from "@/components/reminder-setup";
 import { joinGroup } from "@/lib/actions/groups";
 
 export function JoinForm({ inviteCode }: { inviteCode: string }) {
   const [emoji, setEmoji] = useState<string | null>(null);
   const [pin, setPin] = useState("");
+  const [reminders, setReminders] = useState(false);
 
   return (
     <form action={joinGroup} className="mt-4">
@@ -29,6 +31,9 @@ export function JoinForm({ inviteCode }: { inviteCode: string }) {
           </p>
           <PinInput value={pin} onChange={setPin} />
         </div>
+
+        <ReminderSetup onToggle={setReminders} />
+        <input type="hidden" name="reminders" value={String(reminders)} />
       </div>
       <Button type="submit" className="mt-5" disabled={pin.length !== 4}>
         Join Group 🎉

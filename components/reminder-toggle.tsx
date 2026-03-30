@@ -14,6 +14,10 @@ export function ReminderToggle({ enabled: initial }: { enabled: boolean }) {
 
   async function toggle() {
     if (enabled) {
+      // Disable reminders on server
+      await fetch("/api/push/subscribe", {
+        method: "DELETE",
+      });
       setEnabled(false);
       return;
     }
