@@ -34,6 +34,9 @@ export default function Home() {
           <Link href="/join/enter">
             <Button variant="secondary">Join with Code</Button>
           </Link>
+          <Link href="/reclaim/enter">
+            <Button variant="ghost">🔑 Sign Back In</Button>
+          </Link>
         </div>
 
         {daysLeft > 0 && (

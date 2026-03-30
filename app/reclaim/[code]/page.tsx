@@ -1,6 +1,7 @@
 import { getDb } from "@/lib/db";
 import { Particles } from "@/components/ui/particles";
 import { ReclaimForm } from "./reclaim-form";
+import { ReclaimCodeEntry } from "./code-entry";
 import Link from "next/link";
 
 interface Props {
@@ -9,6 +10,11 @@ interface Props {
 
 export default async function ReclaimPage({ params }: Props) {
   const { code } = await params;
+
+  if (code === "enter") {
+    return <ReclaimCodeEntry />;
+  }
+
   const db = getDb();
 
   const [group] = await db`
