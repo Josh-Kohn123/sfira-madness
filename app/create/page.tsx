@@ -30,6 +30,9 @@ export default function CreatePage() {
 
         <form action={createGroup}>
           <EmojiPicker onSelect={setEmoji} />
+          <p className="text-[10px] text-cosmos-muted/60 text-center mt-1">
+            Tap to pick an emoji avatar (optional)
+          </p>
           <input type="hidden" name="avatarUrl" value={emoji ?? ""} />
 
           <div className="mt-4 space-y-3">

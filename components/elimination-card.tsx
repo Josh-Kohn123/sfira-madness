@@ -32,11 +32,9 @@ export function EliminationCard({
       <div className="relative z-10">
         <div className="mx-auto w-[72px] h-[72px] rounded-full overflow-hidden border-[3px] border-stopped mb-3">
           {avatarUrl ? (
-            <img
-              src={avatarUrl}
-              alt={subjectName}
-              className="w-full h-full object-cover grayscale-[40%]"
-            />
+            <div className="w-full h-full bg-gradient-to-br from-stopped/20 to-stopped/5 flex items-center justify-center text-3xl opacity-60">
+              {avatarUrl}
+            </div>
           ) : (
             <div className="w-full h-full bg-gradient-to-br from-stopped to-stopped/60 flex items-center justify-center text-2xl font-bold text-cosmos-deep">
               {subjectName[0]}
