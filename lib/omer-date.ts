@@ -1,5 +1,16 @@
-export const OMER_START_DATE = new Date("2026-04-03");
+/**
+ * Omer day transitions at 19:30 local time (approximate tzeit hakochavim).
+ * Day 1 begins the evening of April 2 (night after first seder, 16 Nisan).
+ *
+ * OMER_FIRST_EVENING is the calendar date of the evening when day 1 starts.
+ * At 19:30 on this date, the omer count becomes day 1.
+ */
+export const OMER_FIRST_EVENING = new Date("2026-04-02");
 export const OMER_END_DATE = new Date("2026-05-21");
+
+/** Hour (24h) at which the omer day advances — 19:30 local time */
+const TRANSITION_HOUR = 19;
+const TRANSITION_MINUTE = 30;
 
 /**
  * In dev, set DEV_OMER_DAY in .env.local to simulate a specific Omer day (1-49).
@@ -12,6 +23,25 @@ function getDevOverride(): number | null {
   return isNaN(n) ? null : n;
 }
 
+/**
+ * Returns the current "halachic date" — the calendar date of the evening
+ * that started the current Jewish day. Before 19:30, we're still on the
+ * previous evening's day. At/after 19:30, we advance to tonight's day.
+ */
+function getHalachicDate(now: Date): Date {
+  const h = now.getHours();
+  const m = now.getMinutes();
+  const isPastTransition = h > TRANSITION_HOUR || (h === TRANSITION_HOUR && m >= TRANSITION_MINUTE);
+
+  // Before 19:30 → the Jewish day started last evening (yesterday's calendar date)
+  // At/after 19:30 → the Jewish day starts this evening (today's calendar date)
+  const eveningDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  if (!isPastTransition) {
+    eveningDate.setDate(eveningDate.getDate() - 1);
+  }
+  return eveningDate;
+}
+
 export function getCurrentOmerDay(): number | null {
   const dev = getDevOverride();
   if (dev !== null) {
@@ -19,13 +49,13 @@ export function getCurrentOmerDay(): number | null {
     return dev;
   }
   const now = new Date();
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const start = new Date(
-    OMER_START_DATE.getFullYear(),
-    OMER_START_DATE.getMonth(),
-    OMER_START_DATE.getDate()
+  const eveningDate = getHalachicDate(now);
+  const firstEvening = new Date(
+    OMER_FIRST_EVENING.getFullYear(),
+    OMER_FIRST_EVENING.getMonth(),
+    OMER_FIRST_EVENING.getDate()
   );
-  const diffMs = today.getTime() - start.getTime();
+  const diffMs = eveningDate.getTime() - firstEvening.getTime();
   const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
   const day = diffDays + 1;
   if (day < 1 || day > 49) return null;
@@ -44,12 +74,13 @@ export function getOmerPhase(): OmerPhase {
   const day = getCurrentOmerDay();
   if (day === null) {
     const now = new Date();
-    const start = new Date(
-      OMER_START_DATE.getFullYear(),
-      OMER_START_DATE.getMonth(),
-      OMER_START_DATE.getDate()
+    const eveningDate = getHalachicDate(now);
+    const firstEvening = new Date(
+      OMER_FIRST_EVENING.getFullYear(),
+      OMER_FIRST_EVENING.getMonth(),
+      OMER_FIRST_EVENING.getDate()
     );
-    return now < start ? "pre" : "post";
+    return eveningDate < firstEvening ? "pre" : "post";
   }
   return "during";
 }
@@ -57,11 +88,11 @@ export function getOmerPhase(): OmerPhase {
 export function daysUntilOmer(): number {
   const now = new Date();
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const start = new Date(
-    OMER_START_DATE.getFullYear(),
-    OMER_START_DATE.getMonth(),
-    OMER_START_DATE.getDate()
+  const firstEvening = new Date(
+    OMER_FIRST_EVENING.getFullYear(),
+    OMER_FIRST_EVENING.getMonth(),
+    OMER_FIRST_EVENING.getDate()
   );
-  const diffMs = start.getTime() - today.getTime();
+  const diffMs = firstEvening.getTime() - today.getTime();
   return Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
 }

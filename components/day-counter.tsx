@@ -55,6 +55,20 @@ export function DayCounter({ day }: DayCounterProps) {
         <div className="mt-2 pt-2 border-t border-white/10 text-sm text-gold font-serif leading-relaxed">
           {omerCount}
         </div>
+        <div className="mt-2 pt-2 border-t border-white/10 text-center" dir="ltr">
+          <p className="text-[10px] text-cosmos-muted leading-snug">
+            Day updates at 7:30 PM local time. Please verify your local{" "}
+            <a
+              href="https://www.myzmanim.com/search.aspx"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-gold/70 underline underline-offset-2 hover:text-gold"
+            >
+              tzeit hakochavim
+            </a>{" "}
+            for accuracy.
+          </p>
+        </div>
       </div>
       {/* Kavanah */}
       <div className="mt-3 mx-auto max-w-xs border-l-2 border-gold/30 pl-3 text-left">

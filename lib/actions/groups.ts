@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation";
 import { getDb } from "@/lib/db";
 import { hashPin, setAuthCookie, generateInviteCode } from "@/lib/auth";
-import { OMER_START_DATE } from "@/lib/omer-date";
+import { OMER_FIRST_EVENING } from "@/lib/omer-date";
 
 export async function createGroup(formData: FormData) {
   const name = (formData.get("name") as string)?.trim();
@@ -22,7 +22,7 @@ export async function createGroup(formData: FormData) {
 
   const [group] = await db`
     INSERT INTO groups (name, invite_code, omer_start_date)
-    VALUES (${groupName}, ${inviteCode}, ${OMER_START_DATE.toISOString().split("T")[0]})
+    VALUES (${groupName}, ${inviteCode}, ${OMER_FIRST_EVENING.toISOString().split("T")[0]})
     RETURNING id, invite_code
   `;
 
