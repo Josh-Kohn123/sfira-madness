@@ -1,12 +1,20 @@
 "use client";
 
+import { useState, useEffect } from "react";
+
 interface ShareButtonProps {
   inviteCode: string;
   groupName: string;
 }
 
 export function ShareButton({ inviteCode, groupName }: ShareButtonProps) {
-  const url = `${typeof window !== "undefined" ? window.location.origin : ""}/join/${inviteCode}`;
+  const [origin, setOrigin] = useState("");
+
+  useEffect(() => {
+    setOrigin(window.location.origin);
+  }, []);
+
+  const url = `${origin}/join/${inviteCode}`;
   const whatsappText = encodeURIComponent(
     `Join me on Sfira Madness! 🔥 Guess how far your friends will count the Omer — 49 days of bragging rights.\n\n${url}`
   );

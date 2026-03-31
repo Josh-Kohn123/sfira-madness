@@ -1,4 +1,4 @@
-import { getDaySefirot, getKavanah } from "@/lib/sefirot";
+import { getDaySefirot, getKavanah, OMER_BRACHA, getOmerCount } from "@/lib/sefirot";
 
 interface DayCounterProps {
   day: number;
@@ -7,6 +7,7 @@ interface DayCounterProps {
 export function DayCounter({ day }: DayCounterProps) {
   const sefirot = getDaySefirot(day);
   const kavanah = getKavanah(day);
+  const omerCount = getOmerCount(day);
   const progress = day / 49;
   const circumference = 2 * Math.PI * 70;
   const offset = circumference * (1 - progress);
@@ -43,6 +44,19 @@ export function DayCounter({ day }: DayCounterProps) {
         <div className="text-lg text-gold font-serif">{sefirot.hebrew}</div>
         <div className="text-xs text-cosmos-muted mt-0.5">{sefirot.english}</div>
       </div>
+      {/* Bracha & daily count */}
+      <div className="mt-4 mx-auto max-w-xs rounded-xl bg-white/[0.04] border border-gold/15 p-3 text-right" dir="rtl">
+        <div className="text-[10px] uppercase tracking-wider text-cosmos-muted mb-1.5 text-center" dir="ltr">
+          Tonight&apos;s Bracha
+        </div>
+        <div className="text-sm text-white/90 leading-relaxed font-serif">
+          {OMER_BRACHA}
+        </div>
+        <div className="mt-2 pt-2 border-t border-white/10 text-sm text-gold font-serif leading-relaxed">
+          {omerCount}
+        </div>
+      </div>
+      {/* Kavanah */}
       <div className="mt-3 mx-auto max-w-xs border-l-2 border-gold/30 pl-3 text-left">
         <div className="text-[10px] uppercase tracking-wider text-cosmos-muted mb-1">
           Today&apos;s Kavanah

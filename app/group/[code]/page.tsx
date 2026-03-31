@@ -318,7 +318,7 @@ export default async function GroupDashboard({ params }: Props) {
 
         {/* Actions (client component for self-report + reactions) */}
         {member && phase === "during" && !member.eliminated_on_day && (
-          <DashboardActions inviteCode={code} />
+          <DashboardActions inviteCode={code} currentDay={currentDay!} />
         )}
 
         {/* How to Play */}
@@ -330,7 +330,8 @@ export default async function GroupDashboard({ params }: Props) {
                 <span className="text-lg leading-none">1️⃣</span>
                 <div>
                   <span className="font-semibold text-gold">Predict</span>
-                  <span className="text-cosmos-muted"> — Guess what day each friend will stop counting the Omer (days 1–49). Your prediction about yourself is locked at 49 — we believe in you going all the way and won&apos;t let you bet against yourself!</span>
+                  <span className="text-cosmos-muted"> — Guess what day each friend will stop counting the Omer (days 1–49). Your prediction about yourself is locked at 49 — we believe in you going all the way and won&apos;t let you bet against yourself! </span>
+                  <span className="text-white/70 font-medium">You can change your predictions anytime until the Omer begins.</span>
                 </div>
               </div>
               <div className="flex gap-2.5">

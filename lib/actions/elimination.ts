@@ -5,7 +5,7 @@ import { getDb } from "@/lib/db";
 import { getCurrentMember } from "@/lib/auth";
 import { getCurrentOmerDay } from "@/lib/omer-date";
 
-export async function reportMissed(groupInviteCode: string) {
+export async function reportMissed(groupInviteCode: string, lastSuccessfulDay: number) {
   const member = await getCurrentMember();
   if (!member) throw new Error("Not authenticated");
   if (member.eliminated_on_day !== null) throw new Error("Already eliminated");
@@ -13,12 +13,12 @@ export async function reportMissed(groupInviteCode: string) {
   const currentDay = getCurrentOmerDay();
   if (!currentDay) throw new Error("Omer is not active");
 
-  // Eliminated on the previous day (they missed counting, so their last successful day is yesterday)
-  const eliminatedDay = currentDay - 1;
+  // Validate: lastSuccessfulDay should be between 1 and currentDay - 1
+  const eliminatedDay = Math.max(Math.min(lastSuccessfulDay, currentDay - 1), 1);
 
   const db = getDb();
   await db`
-    UPDATE members SET eliminated_on_day = ${Math.max(eliminatedDay, 1)}
+    UPDATE members SET eliminated_on_day = ${eliminatedDay}
     WHERE id = ${member.id}
   `;
 

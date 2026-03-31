@@ -29,6 +29,15 @@ export default function RootLayout({
     <html lang="en" className={`${rubik.variable} ${secularOne.variable}`}>
       <body className="min-h-screen bg-cosmos-gradient font-sans text-white antialiased">
         {children}
+        <footer className="relative z-10 pb-6 pt-8 text-center">
+          <div className="text-[11px] text-cosmos-muted">Kindly Send Feedback To</div>
+          <a
+            href="mailto:sfiramadness@gmail.com"
+            className="text-[11px] text-cosmos-muted hover:text-gold transition-colors"
+          >
+            sfiramadness@gmail.com
+          </a>
+        </footer>
         <Analytics />
       </body>
     </html>
