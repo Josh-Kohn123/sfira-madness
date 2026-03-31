@@ -1,14 +1,26 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import { getDaySefirot, getKavanah, OMER_BRACHA, getOmerCount } from "@/lib/sefirot";
+import { getLocalOmerDay } from "@/lib/omer-date-client";
 
 interface DayCounterProps {
+  /** Server-computed day, used as initial value before client takes over */
   day: number;
 }
 
-export function DayCounter({ day }: DayCounterProps) {
-  const sefirot = getDaySefirot(day);
-  const kavanah = getKavanah(day);
-  const omerCount = getOmerCount(day);
-  const progress = day / 49;
+export function DayCounter({ day: serverDay }: DayCounterProps) {
+  const [localDay, setLocalDay] = useState(serverDay);
+
+  useEffect(() => {
+    const computed = getLocalOmerDay();
+    if (computed) setLocalDay(computed);
+  }, []);
+
+  const sefirot = getDaySefirot(localDay);
+  const kavanah = getKavanah(localDay);
+  const omerCount = getOmerCount(localDay);
+  const progress = localDay / 49;
   const circumference = 2 * Math.PI * 70;
   const offset = circumference * (1 - progress);
 
@@ -36,7 +48,7 @@ export function DayCounter({ day }: DayCounterProps) {
           />
         </svg>
         <div className="relative z-10">
-          <div className="text-5xl font-black">{day}</div>
+          <div className="text-5xl font-black">{localDay}</div>
           <div className="text-xs text-cosmos-muted -mt-1">of 49</div>
         </div>
       </div>

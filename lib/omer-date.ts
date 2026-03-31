@@ -9,8 +9,8 @@ export const OMER_FIRST_EVENING = new Date("2026-04-02");
 export const OMER_END_DATE = new Date("2026-05-21");
 
 /** Hour (24h) at which the omer day advances — 19:30 local time */
-const TRANSITION_HOUR = 19;
-const TRANSITION_MINUTE = 30;
+export const TRANSITION_HOUR = 19;
+export const TRANSITION_MINUTE = 30;
 
 /**
  * In dev, set DEV_OMER_DAY in .env.local to simulate a specific Omer day (1-49).
