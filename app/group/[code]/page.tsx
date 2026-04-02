@@ -113,7 +113,8 @@ export default async function GroupDashboard({ params }: Props) {
     earnedAchievements = await getEarnedAchievements(
       member.id,
       group.id,
-      currentDay
+      currentDay,
+      phase
     );
   }
 

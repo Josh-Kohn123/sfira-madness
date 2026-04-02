@@ -1,4 +1,5 @@
 import { queryMany } from "./db";
+import type { OmerPhase } from "./omer-date";
 
 export interface Achievement {
   id: string;
@@ -21,7 +22,8 @@ export const ACHIEVEMENTS: Achievement[] = [
 export async function getEarnedAchievements(
   memberId: string,
   groupId: string,
-  currentDay: number | null
+  currentDay: number | null,
+  omerPhase: OmerPhase = "during"
 ): Promise<string[]> {
   const earned: string[] = [];
 
@@ -36,8 +38,8 @@ export async function getEarnedAchievements(
   if (reachedDay >= 7) earned.push("week-one");
   if (reachedDay >= 25) earned.push("halfway");
   if (reachedDay >= 33) earned.push("lag-baomer");
-  // Iron Will requires making it through all 49 without elimination
-  if (currentDay === null && elim === null) earned.push("iron-will");
+  // Iron Will requires completing all 49 days without elimination (post-omer only)
+  if (omerPhase === "post" && elim === null) earned.push("iron-will");
 
   const predictions = await queryMany<{
     predicted_day: number;
@@ -63,7 +65,8 @@ export async function getEarnedAchievements(
   if (
     aboutMe.length > 0 &&
     elim === null &&
-    aboutMe.every((p) => p.predicted_day < (currentDay ?? 49))
+    currentDay !== null &&
+    aboutMe.every((p) => p.predicted_day < currentDay)
   ) {
     earned.push("underdog");
   }
