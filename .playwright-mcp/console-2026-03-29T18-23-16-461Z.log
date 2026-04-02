@@ -1,0 +1,4 @@
+[     880ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://sfira-madness-112n9s0qz-orbs-finances-projects.vercel.app/icons/icon-192.png:0
+[     885ms] [WARNING] Error while trying to use the following icon from the Manifest: https://sfira-madness-112n9s0qz-orbs-finances-projects.vercel.app/icons/icon-192.png (Download error or resource isn't a valid image) @ https://sfira-madness-112n9s0qz-orbs-finances-projects.vercel.app/create:0
+[ 1736563ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://sfira-madness-112n9s0qz-orbs-finances-projects.vercel.app/icons/icon-192.png:0
+[ 1736565ms] [WARNING] Error while trying to use the following icon from the Manifest: https://sfira-madness-112n9s0qz-orbs-finances-projects.vercel.app/icons/icon-192.png (Download error or resource isn't a valid image) @ https://sfira-madness-112n9s0qz-orbs-finances-projects.vercel.app/create:0

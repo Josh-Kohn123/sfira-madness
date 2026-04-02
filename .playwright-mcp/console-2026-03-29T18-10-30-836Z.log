@@ -1,0 +1,8 @@
+[    1103ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://sfira-madness-gt3c1sec4-orbs-finances-projects.vercel.app/icons/icon-192.png:0
+[    1105ms] [WARNING] Error while trying to use the following icon from the Manifest: https://sfira-madness-gt3c1sec4-orbs-finances-projects.vercel.app/icons/icon-192.png (Download error or resource isn't a valid image) @ https://sfira-madness-gt3c1sec4-orbs-finances-projects.vercel.app/:0
+[   25401ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://sfira-madness-gt3c1sec4-orbs-finances-projects.vercel.app/icons/icon-192.png:0
+[   25404ms] [WARNING] Error while trying to use the following icon from the Manifest: https://sfira-madness-gt3c1sec4-orbs-finances-projects.vercel.app/icons/icon-192.png (Download error or resource isn't a valid image) @ https://sfira-madness-gt3c1sec4-orbs-finances-projects.vercel.app/create:0
+[   95633ms] [ERROR] Failed to load resource: the server responded with a status of 500 () @ https://sfira-madness-gt3c1sec4-orbs-finances-projects.vercel.app/api/upload?filename=nava.jpg:0
+[   95636ms] Unexpected end of JSON input
+[  169189ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://sfira-madness-gt3c1sec4-orbs-finances-projects.vercel.app/icons/icon-192.png:0
+[  169192ms] [WARNING] Error while trying to use the following icon from the Manifest: https://sfira-madness-gt3c1sec4-orbs-finances-projects.vercel.app/icons/icon-192.png (Download error or resource isn't a valid image) @ https://sfira-madness-gt3c1sec4-orbs-finances-projects.vercel.app/group/NKT-SC9:0

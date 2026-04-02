@@ -1,6 +1,7 @@
 import { getDb } from "@/lib/db";
 import { getCurrentMemberForGroup } from "@/lib/auth";
-import { getOmerPhase, getCurrentOmerDay, daysUntilOmer } from "@/lib/omer-date";
+import { getOmerPhase, getCurrentOmerDay, daysUntilOmer, type OmerPhase } from "@/lib/omer-date";
+import { PhaseGate } from "@/components/phase-gate";
 import { getGroupScores, computeScore } from "@/lib/scoring";
 import { getEarnedAchievements, ACHIEVEMENTS } from "@/lib/achievements";
 import { Particles } from "@/components/ui/particles";
@@ -134,32 +135,30 @@ export default async function GroupDashboard({ params }: Props) {
         </div>
 
         {/* Phase: During Omer */}
-        {phase === "during" && currentDay && (
-          <>
-            <div className="mt-6">
-              <DayCounter day={currentDay} />
-            </div>
+        <PhaseGate show="during" serverPhase={phase}>
+          <div className="mt-6">
+            <DayCounter day={currentDay ?? 1} />
+          </div>
 
-            {/* Stats bar */}
-            <div className="flex justify-center gap-6 mt-5 p-3 rounded-2xl bg-white/5 backdrop-blur">
-              <div className="text-center">
-                <div className="text-2xl font-black text-counting">{counting.length}</div>
-                <div className="text-[10px] text-cosmos-muted uppercase tracking-wider">Still In</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-black text-stopped">{stopped.length}</div>
-                <div className="text-[10px] text-cosmos-muted uppercase tracking-wider">Stopped</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-black">{members.length}</div>
-                <div className="text-[10px] text-cosmos-muted uppercase tracking-wider">Players</div>
-              </div>
+          {/* Stats bar */}
+          <div className="flex justify-center gap-6 mt-5 p-3 rounded-2xl bg-white/5 backdrop-blur">
+            <div className="text-center">
+              <div className="text-2xl font-black text-counting">{counting.length}</div>
+              <div className="text-[10px] text-cosmos-muted uppercase tracking-wider">Still In</div>
             </div>
-          </>
-        )}
+            <div className="text-center">
+              <div className="text-2xl font-black text-stopped">{stopped.length}</div>
+              <div className="text-[10px] text-cosmos-muted uppercase tracking-wider">Stopped</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-black">{members.length}</div>
+              <div className="text-[10px] text-cosmos-muted uppercase tracking-wider">Players</div>
+            </div>
+          </div>
+        </PhaseGate>
 
         {/* Phase: Pre-Omer */}
-        {phase === "pre" && (
+        <PhaseGate show="pre" serverPhase={phase}>
           <div className="mt-6 text-center">
             <div className="text-4xl mb-2">⏳</div>
             <div className="text-lg font-bold">
@@ -177,10 +176,10 @@ export default async function GroupDashboard({ params }: Props) {
               </Link>
             )}
           </div>
-        )}
+        </PhaseGate>
 
         {/* Phase: Post-Omer */}
-        {phase === "post" && (
+        <PhaseGate show="post" serverPhase={phase}>
           <div className="mt-6 text-center">
             <div className="text-4xl mb-2">🏆</div>
             <div className="text-lg font-bold text-gold">It&apos;s Over!</div>
@@ -188,55 +187,53 @@ export default async function GroupDashboard({ params }: Props) {
               49 days complete. Final scores below.
             </div>
           </div>
-        )}
+        </PhaseGate>
 
         {/* Player list (during/post) */}
-        {phase !== "pre" && (
-          <>
-            {counting.length > 0 && (
-              <div className="mt-6">
-                <SectionHeader>Still Counting</SectionHeader>
-                <div className="space-y-2">
-                  {counting.map((m) => (
+        <PhaseGate show={["during", "post"]} serverPhase={phase}>
+          {counting.length > 0 && (
+            <div className="mt-6">
+              <SectionHeader>Still Counting</SectionHeader>
+              <div className="space-y-2">
+                {counting.map((m) => (
+                  <PlayerCard
+                    key={m.id}
+                    name={m.name}
+                    avatarUrl={m.avatar_url}
+                    isYou={member?.id === m.id}
+                    isCounting
+                    streak={currentDay ?? 1}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {stopped.length > 0 && (
+            <div className="mt-6">
+              <SectionHeader>Stopped Counting</SectionHeader>
+              <div className="space-y-2">
+                {stopped.map((m) => (
                     <PlayerCard
                       key={m.id}
                       name={m.name}
                       avatarUrl={m.avatar_url}
                       isYou={member?.id === m.id}
-                      isCounting
-                      streak={currentDay ?? undefined}
+                      isCounting={false}
+                      eliminatedOnDay={m.eliminated_on_day}
+                      yourPrediction={myPredictions[m.id]}
+                      yourScore={
+                        myPredictions[m.id] !== undefined
+                          ? computeScore(myPredictions[m.id], m.eliminated_on_day)
+                          : null
+                      }
                     />
-                  ))}
-                </div>
+                  )
+                )}
               </div>
-            )}
-
-            {stopped.length > 0 && (
-              <div className="mt-6">
-                <SectionHeader>Stopped Counting</SectionHeader>
-                <div className="space-y-2">
-                  {stopped.map((m) => (
-                      <PlayerCard
-                        key={m.id}
-                        name={m.name}
-                        avatarUrl={m.avatar_url}
-                        isYou={member?.id === m.id}
-                        isCounting={false}
-                        eliminatedOnDay={m.eliminated_on_day}
-                        yourPrediction={myPredictions[m.id]}
-                        yourScore={
-                          myPredictions[m.id] !== undefined
-                            ? computeScore(myPredictions[m.id], m.eliminated_on_day)
-                            : null
-                        }
-                      />
-                    )
-                  )}
-                </div>
-              </div>
-            )}
-          </>
-        )}
+            </div>
+          )}
+        </PhaseGate>
 
         {/* Reveals — only for resolved players */}
         {resolvedMembers.length > 0 && (
@@ -281,48 +278,54 @@ export default async function GroupDashboard({ params }: Props) {
         )}
 
         {/* Achievements */}
-        {member && (phase === "during" || phase === "post") && (
-          <div className="mt-6">
-            <SectionHeader>Achievements</SectionHeader>
-            <ScreenshotShare filename="sfira-achievements">
-              <div className="p-3">
-                <div className="text-center text-[11px] text-cosmos-muted mb-2 font-semibold uppercase tracking-widest">
-                  {member.name}&apos;s Achievements
+        {member && (
+          <PhaseGate show={["during", "post"]} serverPhase={phase}>
+            <div className="mt-6">
+              <SectionHeader>Achievements</SectionHeader>
+              <ScreenshotShare filename="sfira-achievements">
+                <div className="p-3">
+                  <div className="text-center text-[11px] text-cosmos-muted mb-2 font-semibold uppercase tracking-widest">
+                    {member.name}&apos;s Achievements
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {ACHIEVEMENTS.map((a) => (
+                      <AchievementBadge
+                        key={a.id}
+                        emoji={a.emoji}
+                        name={a.name}
+                        description={a.description}
+                        earned={earnedAchievements.includes(a.id)}
+                      />
+                    ))}
+                  </div>
                 </div>
-                <div className="flex flex-wrap gap-2">
-                  {ACHIEVEMENTS.map((a) => (
-                    <AchievementBadge
-                      key={a.id}
-                      emoji={a.emoji}
-                      name={a.name}
-                      description={a.description}
-                      earned={earnedAchievements.includes(a.id)}
-                    />
-                  ))}
-                </div>
-              </div>
-            </ScreenshotShare>
-          </div>
+              </ScreenshotShare>
+            </div>
+          </PhaseGate>
         )}
 
         {/* Reminders toggle (during phase) */}
-        {member && phase === "during" && (
-          <div className="mt-6">
-            <SectionHeader>Reminders</SectionHeader>
-            <ReminderToggle enabled={member.reminders_enabled ?? false} />
-          </div>
+        {member && (
+          <PhaseGate show="during" serverPhase={phase}>
+            <div className="mt-6">
+              <SectionHeader>Reminders</SectionHeader>
+              <ReminderToggle enabled={member.reminders_enabled ?? false} />
+            </div>
+          </PhaseGate>
         )}
 
         {/* Auto-subscribe to push if reminders enabled */}
         {member && <PushSubscriber remindersEnabled={member.reminders_enabled ?? false} />}
 
         {/* Actions (client component for self-report + reactions) */}
-        {member && phase === "during" && !member.eliminated_on_day && (
-          <DashboardActions inviteCode={code} currentDay={currentDay!} />
+        {member && !member.eliminated_on_day && (
+          <PhaseGate show="during" serverPhase={phase}>
+            <DashboardActions inviteCode={code} currentDay={currentDay ?? 1} />
+          </PhaseGate>
         )}
 
         {/* How to Play */}
-        {phase === "pre" && (
+        <PhaseGate show="pre" serverPhase={phase}>
           <div className="mt-6">
             <SectionHeader>How to Play</SectionHeader>
             <div className="rounded-2xl bg-cosmos-card border border-cosmos-border p-4 space-y-3 text-sm">
@@ -358,10 +361,10 @@ export default async function GroupDashboard({ params }: Props) {
               </div>
             </div>
           </div>
-        )}
+        </PhaseGate>
 
         {/* Pre-omer: member list + invite */}
-        {phase === "pre" && (
+        <PhaseGate show="pre" serverPhase={phase}>
           <div className="mt-6">
             <SectionHeader>
               Joined ({members.length})
@@ -397,7 +400,7 @@ export default async function GroupDashboard({ params }: Props) {
               )}
             </div>
           </div>
-        )}
+        </PhaseGate>
 
         {/* Invite code + share */}
         <div className="mt-8">
