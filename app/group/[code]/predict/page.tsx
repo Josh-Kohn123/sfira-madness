@@ -1,6 +1,6 @@
 import { getDb } from "@/lib/db";
 import { getCurrentMemberForGroup } from "@/lib/auth";
-import { getOmerPhase } from "@/lib/omer-date";
+import { getOmerPhase, getCurrentOmerDay } from "@/lib/omer-date";
 import { Particles } from "@/components/ui/particles";
 import { redirect } from "next/navigation";
 import { PredictionForm } from "./prediction-form";
@@ -12,7 +12,9 @@ interface Props {
 export default async function PredictPage({ params }: Props) {
   const { code } = await params;
 
-  if (getOmerPhase() !== "pre") redirect(`/group/${code}`);
+  const phase = getOmerPhase();
+  // Only block after the Omer is completely over
+  if (phase === "post") redirect(`/group/${code}`);
 
   const db = getDb();
   const [group] = await db`
@@ -38,6 +40,8 @@ export default async function PredictPage({ params }: Props) {
     savedPredictions[p.subject_id] = p.predicted_day;
   }
 
+  const currentDay = phase === "during" ? getCurrentOmerDay() : null;
+
   return (
     <main className="relative min-h-screen pb-10">
       <Particles />
@@ -51,9 +55,16 @@ export default async function PredictPage({ params }: Props) {
         <p className="text-xs text-cosmos-muted text-center mt-1 mb-1">
           Guess what day each person will stop counting (1–49).
         </p>
-        <p className="text-[10px] text-cosmos-muted/60 text-center mb-6">
-          You can change these anytime before the Omer starts.
-        </p>
+        {currentDay ? (
+          <p className="text-[10px] text-cosmos-muted/60 text-center mb-6">
+            Joining late — you can predict for days {currentDay + 1}–49.
+            Past-day predictions are locked.
+          </p>
+        ) : (
+          <p className="text-[10px] text-cosmos-muted/60 text-center mb-6">
+            You can change these anytime before the Omer starts.
+          </p>
+        )}
 
         <PredictionForm
           members={members.map((m) => ({
@@ -64,6 +75,7 @@ export default async function PredictPage({ params }: Props) {
           }))}
           inviteCode={code}
           savedPredictions={savedPredictions}
+          currentOmerDay={currentDay}
         />
       </div>
     </main>

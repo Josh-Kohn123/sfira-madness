@@ -141,6 +141,18 @@ export default async function GroupDashboard({ params }: Props) {
             <DayCounter day={currentDay ?? 1} />
           </div>
 
+          {/* Late prediction CTA */}
+          {member && !member.predictions_locked && (
+            <div className="mt-4 text-center">
+              <Link href={`/group/${code}/predict`}>
+                <Button>Make My Predictions →</Button>
+              </Link>
+              <div className="text-[10px] text-cosmos-muted mt-1">
+                You can still join — predict for remaining days!
+              </div>
+            </div>
+          )}
+
           {/* Stats bar */}
           <div className="flex justify-center gap-6 mt-5 p-3 rounded-2xl bg-white/5 backdrop-blur">
             <div className="text-center">
@@ -335,7 +347,7 @@ export default async function GroupDashboard({ params }: Props) {
                 <div>
                   <span className="font-semibold text-gold">Predict</span>
                   <span className="text-cosmos-muted"> — Guess what day each friend will stop counting the Omer (days 1–49). Your prediction about yourself is locked at 49 — we believe in you going all the way and won&apos;t let you bet against yourself! </span>
-                  <span className="text-white/70 font-medium">You can change your predictions anytime until the Omer begins.</span>
+                  <span className="text-white/70 font-medium">Friends can still join and predict after the Omer starts — they just can&apos;t predict past days.</span>
                 </div>
               </div>
               <div className="flex gap-2.5">

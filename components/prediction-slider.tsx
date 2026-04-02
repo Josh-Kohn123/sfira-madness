@@ -8,6 +8,8 @@ interface PredictionSliderProps {
   onChange: (value: number) => void;
   locked?: boolean;
   isSelf?: boolean;
+  minDay?: number;
+  frozenLabel?: string;
 }
 
 export function PredictionSlider({
@@ -18,6 +20,8 @@ export function PredictionSlider({
   onChange,
   locked = false,
   isSelf = false,
+  minDay = 1,
+  frozenLabel,
 }: PredictionSliderProps) {
   return (
     <div
@@ -53,17 +57,28 @@ export function PredictionSlider({
           )}
         </div>
         {!locked && !isSelf ? (
-          <input
-            type="range"
-            min={1}
-            max={49}
-            value={value}
-            onChange={(e) => onChange(Number(e.target.value))}
-            className="w-full mt-1 accent-gold"
-          />
+          <>
+            <input
+              type="range"
+              min={minDay}
+              max={49}
+              value={value}
+              onChange={(e) => onChange(Number(e.target.value))}
+              className="w-full mt-1 accent-gold"
+            />
+            {minDay > 1 && (
+              <div className="text-[9px] text-cosmos-muted/50 mt-0.5">
+                Range: {minDay}–49
+              </div>
+            )}
+          </>
         ) : isSelf ? (
           <div className="text-[11px] text-cosmos-muted mt-0.5">
             Miss a day? You eat the penalty 💀
+          </div>
+        ) : frozenLabel ? (
+          <div className="text-[11px] text-cosmos-muted mt-0.5">
+            {frozenLabel}
           </div>
         ) : null}
       </div>
@@ -79,7 +94,7 @@ export function PredictionSlider({
           {value}
         </div>
         <div className="text-[8px] uppercase text-cosmos-muted">
-          {locked || isSelf ? "locked" : "days"}
+          {frozenLabel ? "frozen" : locked || isSelf ? "locked" : "days"}
         </div>
       </div>
     </div>
