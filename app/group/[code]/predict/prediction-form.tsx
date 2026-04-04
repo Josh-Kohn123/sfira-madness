@@ -46,9 +46,9 @@ export function PredictionForm({
       <input type="hidden" name="inviteCode" value={inviteCode} />
       <div className="space-y-2">
         {members.map((m) => {
-          // During omer: past-day predictions are frozen (can't change them)
+          // During omer: all existing predictions are locked, only new members are editable
           const existingDay = savedPredictions?.[m.id];
-          const frozenPast = !m.isSelf && currentOmerDay && existingDay && existingDay <= currentOmerDay;
+          const frozenExisting = !m.isSelf && currentOmerDay && existingDay !== undefined;
 
           return (
             <div key={m.id}>
@@ -60,9 +60,9 @@ export function PredictionForm({
                 value={values[m.id]}
                 onChange={(v) => setValues((prev) => ({ ...prev, [m.id]: v }))}
                 isSelf={m.isSelf}
-                locked={m.isSelf || !!frozenPast}
+                locked={m.isSelf || !!frozenExisting}
                 minDay={!m.isSelf && currentOmerDay ? minDay : 1}
-                frozenLabel={frozenPast ? "past — locked" : undefined}
+                frozenLabel={frozenExisting ? "locked" : undefined}
               />
             </div>
           );

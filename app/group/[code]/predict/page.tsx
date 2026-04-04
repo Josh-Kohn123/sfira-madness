@@ -55,10 +55,14 @@ export default async function PredictPage({ params }: Props) {
         <p className="text-xs text-cosmos-muted text-center mt-1 mb-1">
           Guess what day each person will stop counting (1–49).
         </p>
-        {currentDay ? (
+        {currentDay && Object.keys(savedPredictions).length === 0 ? (
           <p className="text-[10px] text-cosmos-muted/60 text-center mb-6">
             Joining late — you can predict for days {currentDay + 1}–49.
             Past-day predictions are locked.
+          </p>
+        ) : currentDay ? (
+          <p className="text-[10px] text-cosmos-muted/60 text-center mb-6">
+            Past predictions are locked. You can update future-day predictions.
           </p>
         ) : (
           <p className="text-[10px] text-cosmos-muted/60 text-center mb-6">

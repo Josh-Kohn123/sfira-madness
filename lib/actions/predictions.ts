@@ -41,23 +41,31 @@ export async function submitPredictions(formData: FormData) {
   if (predictions.length === 0) throw new Error("No predictions submitted");
 
   if (isDuring) {
-    // During omer: only delete predictions for future days, preserve frozen past-day predictions
-    await db`
-      DELETE FROM predictions
-      WHERE predictor_id = ${member.id}
-        AND predicted_day > ${currentDay}
+    // During omer: existing predictions are frozen, only insert for new members
+    const existingPreds = await db`
+      SELECT subject_id FROM predictions WHERE predictor_id = ${member.id}
     `;
+    const alreadyPredicted = new Set(existingPreds.map((r) => r.subject_id as string));
+
+    for (const p of predictions) {
+      if (!alreadyPredicted.has(p.subjectId)) {
+        await db`
+          INSERT INTO predictions (group_id, predictor_id, subject_id, predicted_day)
+          VALUES (${member.group_id}, ${member.id}, ${p.subjectId}, ${p.day})
+        `;
+      }
+    }
   } else {
     // Pre-omer: replace all predictions freely
     await db`DELETE FROM predictions WHERE predictor_id = ${member.id}`;
-  }
 
-  for (const p of predictions) {
-    await db`
-      INSERT INTO predictions (group_id, predictor_id, subject_id, predicted_day)
-      VALUES (${member.group_id}, ${member.id}, ${p.subjectId}, ${p.day})
-      ON CONFLICT (predictor_id, subject_id) DO UPDATE SET predicted_day = ${p.day}
-    `;
+    for (const p of predictions) {
+      await db`
+        INSERT INTO predictions (group_id, predictor_id, subject_id, predicted_day)
+        VALUES (${member.group_id}, ${member.id}, ${p.subjectId}, ${p.day})
+        ON CONFLICT (predictor_id, subject_id) DO UPDATE SET predicted_day = ${p.day}
+      `;
+    }
   }
 
   // Mark predictions as locked

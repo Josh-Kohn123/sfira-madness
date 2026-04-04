@@ -118,6 +118,11 @@ export default async function GroupDashboard({ params }: Props) {
     );
   }
 
+  // Detect members the current user hasn't predicted for yet (late joiners)
+  const unpredictedMembers = member && member.predictions_locked
+    ? members.filter((m) => !(m.id in myPredictions))
+    : [];
+
   const counting = members.filter((m) => m.eliminated_on_day === null);
   const stopped = members.filter((m) => m.eliminated_on_day !== null);
 
@@ -141,7 +146,7 @@ export default async function GroupDashboard({ params }: Props) {
             <DayCounter day={currentDay ?? 1} />
           </div>
 
-          {/* Late prediction CTA */}
+          {/* Late prediction CTA — never submitted */}
           {member && !member.predictions_locked && (
             <div className="mt-4 text-center">
               <Link href={`/group/${code}/predict`}>
@@ -149,6 +154,18 @@ export default async function GroupDashboard({ params }: Props) {
               </Link>
               <div className="text-[10px] text-cosmos-muted mt-1">
                 You can still join — predict for remaining days!
+              </div>
+            </div>
+          )}
+
+          {/* New member joined — update predictions */}
+          {unpredictedMembers.length > 0 && (
+            <div className="mt-4 text-center">
+              <Link href={`/group/${code}/predict`}>
+                <Button>🆕 Update Predictions</Button>
+              </Link>
+              <div className="text-[10px] text-cosmos-muted mt-1">
+                {unpredictedMembers.map((m) => m.name).join(", ")} joined — add your prediction!
               </div>
             </div>
           )}
