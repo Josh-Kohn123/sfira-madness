@@ -30,10 +30,6 @@ export async function submitPredictions(formData: FormData) {
       if (subjectId === member.id && day !== 49) {
         throw new Error("Self-prediction must be 49");
       }
-      // During omer: can only predict future days
-      if (isDuring && subjectId !== member.id && day <= currentDay) {
-        throw new Error(`Day ${day} has already passed (current day: ${currentDay})`);
-      }
       predictions.push({ subjectId, day });
     }
   }
@@ -49,6 +45,10 @@ export async function submitPredictions(formData: FormData) {
 
     for (const p of predictions) {
       if (!alreadyPredicted.has(p.subjectId)) {
+        // Only validate day range for new predictions that will actually be inserted
+        if (p.subjectId !== member.id && currentDay !== null && p.day <= currentDay) {
+          throw new Error(`Day ${p.day} has already passed (current day: ${currentDay})`);
+        }
         await db`
           INSERT INTO predictions (group_id, predictor_id, subject_id, predicted_day)
           VALUES (${member.group_id}, ${member.id}, ${p.subjectId}, ${p.day})
